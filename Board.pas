@@ -13,9 +13,6 @@ type
 
     Board = class
     private
-//        boardY : array[0 .. 7] of string;
-//        board : array[0 .. 7] of boardY;
-//          board = array[0 .. 7,0 .. 7] of string;
 
     public
         constructor create();
@@ -29,8 +26,6 @@ var
 
 constructor Board.create();
 begin
-//         boardY = array[0 .. 7] of string;
-//         board = array[0 .. 7] of boardY;
 
 end;
 
