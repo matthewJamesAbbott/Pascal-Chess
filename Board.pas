@@ -24,7 +24,7 @@ begin
     board[x,y] := piece;
 end;
 
-function returnSquare(x, y): string;
+function Board.returnSquare(x, y): string;
 begin
     returnSquare := board[x,y];
 end;
