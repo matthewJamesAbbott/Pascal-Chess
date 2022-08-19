@@ -1,30 +1,48 @@
+//
+// Created by Matthew Abbott 19/8/22.
+//
+
 {$mode objfpc}
 {$m+}
 
-program Pascal-Chess;
+
+
+program PascalChess;
 type
+               boardArray = array[0 .. 7,0 .. 7] of string;
+
     Board = class
     private
-        board = array[8,8] of string;
+//        boardY : array[0 .. 7] of string;
+//        board : array[0 .. 7] of boardY;
+//          board = array[0 .. 7,0 .. 7] of string;
 
     public
         constructor create();
         procedure setSquare(x, y: integer; piece: string);
 
-        function returnSquare(x, y): string;
+        function returnSquare(x, y: integer): string;
 end;
+
+var
+    gameBoard : boardArray;
 
 constructor Board.create();
 begin
+//         boardY = array[0 .. 7] of string;
+//         board = array[0 .. 7] of boardY;
 
 end;
 
 procedure Board.setSquare(x, y: integer; piece: string);
 begin
-    board[x,y] := piece;
+    gameBoard[x,y] := piece;
 end;
 
-function Board.returnSquare(x, y): string;
+function Board.returnSquare(x, y: integer): string;
 begin
-    returnSquare := board[x,y];
+    returnSquare := gameBoard[x,y];
 end;
+
+begin
+end.
