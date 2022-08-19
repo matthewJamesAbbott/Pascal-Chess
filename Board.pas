@@ -9,7 +9,7 @@
 
 program PascalChess;
 type
-               boardArray = array[0 .. 7,0 .. 7] of string;
+    boardArray = array[0 .. 7,0 .. 7] of string;
 
     Board = class
     private
