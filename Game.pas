@@ -14,7 +14,7 @@ type
 
     Game = Class (Print)
     private
-
+        
     public
         constructor create();
         procedure setPlayerOne(name: string);
@@ -24,5 +24,21 @@ type
         function recallMove(): boolean;
         procedure loadGame(fileName: string);
         function movePiece(xa, xb: integer; ca, cb: integer): boolean;
+        function engineMove(): boolean;
+        clientServerToggle, clientPort, playerSide = integer;
+        serverPort = array[0 .. 3] of char;
+        clientIP = string;
+end;
+
+var
+    gameBoard: Board;
+    rec: MoveRecorder;
+    calc: MoveCalculator;
+    moveEngine: Engine;
+
+constructor Game.create();
+begin
+
+end;
 
 
