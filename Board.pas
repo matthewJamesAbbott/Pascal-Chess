@@ -14,7 +14,7 @@ type
         function returnSquare(x, y): string;
 end;
 
-constuctor Board.create();
+constructor Board.create();
 begin
 
 end;
