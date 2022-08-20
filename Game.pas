@@ -127,6 +127,37 @@ begin
             gameBoard.setSquare(1,i,'Black Pawn');
         end;
 
+    {
+    load string representations of empty space into
+    2D array starting at 6A finishing at 3H
+    }
+
+    for e := 2 to 5 do
+        begin
+            for i := 0 to 7 do
+                begin
+                    gameBoard.setSquare(e,i,'Empty');
+                end;
+        end;
+
+    {
+        load white pieces into 2D array starting at 2A
+        finishing at 1H
+        notice pawns in reverse order from black
+    }
+
+    for i := 0 to 7 do
+        begin
+            gameBoard.setSquare(6,i,'White Pawn');
+        end;
+    gameBoard.setSquare(7,0,'White Left Rook');
+    gameBoard.setSquare(7,1,'White Left Knight');
+    gameBoard.setSquare(7,2,'White Left Bishop');
+    gameBoard.setSquare(7,3,'White King');
+    gameBoard.setSquare(7,4,'White Queen');
+    gameBoard.setSquare(7,5,'White Right Bishop');
+    gameBoard.setSquare(7,6,'White Right Knight');
+    gameBoard.setSquare(7,7,'White Right Rook');
 
 end;
 
