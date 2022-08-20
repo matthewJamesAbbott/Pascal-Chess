@@ -8,7 +8,7 @@ unit Game;
 interface
 
 uses
-    Board; //, MoveRecorder, Engine, Print, MoveCalculator;
+    Board,Strutils; //, MoveRecorder, Engine, Print, MoveCalculator;
 type
     serverPort = array[0 .. 3] of char;
     TGame =  Object
@@ -19,8 +19,8 @@ type
         procedure setPlayerOne(name: string);
         procedure setPlayerTwo(name: string);
         procedure initialiseBoard();
-        procedure initialiseBoardReverse();{
-        function recallMove(): boolean;
+        procedure initialiseBoardReverse();
+        function recallMove(): boolean;{
         procedure loadGame(fileName: string);
         function movePiece(xa, xb: integer; ca, cb: integer): boolean;
         function engineMove(): boolean;}
@@ -32,8 +32,9 @@ var
     calc: TMoveCalculator;
     moveEngine: TEngine;}
     clientServerToggle, clientPort, playerSide : integer;
-    clientIP : string;
-    i, e: integer;
+    clientIP,rLine,rTurn: string;
+    i, e, turn: integer;
+    gameFile: TextFile;
 
 implementation
 
@@ -160,12 +161,24 @@ begin
     gameBoard.setSquare(7,7,'White Right Rook');
 
     {
-        read and pares move history from Chess.txt for board layour
+        read and parse move history from Chess.txt for board layour
         of last move reset game to board layout giving the user
         the next turn
     }
-
     
 end;
 
+function TGame.recallMove(): boolean;
+begin
+    AssignFile(gameFile, 'Chess.txt');
+    ReWrite(gameFile);
+    while 1 <> 0 do
+        begin
+            if (rLine = '') then
+                break;
+            if (Pos ('[',rLine) <> 0) then
+                rTurn := copy(rLine, 2,2);
+        end;
+    recallMove := true;
+end;
 end.
