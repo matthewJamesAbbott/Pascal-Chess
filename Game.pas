@@ -199,8 +199,9 @@ begin
             start := 0;
             readln(gameFile, rLine);
             for e := 0 to 7 do
-            begin
-            end;
+                begin
+                    position := pos(',', rLine);
+                end;
         end;
     recallMove := true;
 end;
