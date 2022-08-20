@@ -8,7 +8,7 @@ unit Game;
 interface
 
 uses
-    Board,Strutils; //, MoveRecorder, Engine, Print, MoveCalculator;
+    Board,Sysutils; //, MoveRecorder, Engine, Print, MoveCalculator;
 type
     serverPort = array[0 .. 3] of char;
     TGame =  Object
@@ -33,7 +33,7 @@ var
     moveEngine: TEngine;}
     clientServerToggle, clientPort, playerSide : integer;
     clientIP,rLine,rTurn: string;
-    i, e, turn: integer;
+    i, e, turn, position, start: integer;
     gameFile: TextFile;
 
 implementation
@@ -171,13 +171,36 @@ end;
 function TGame.recallMove(): boolean;
 begin
     AssignFile(gameFile, 'Chess.txt');
-    ReWrite(gameFile);
+    rewrite(gameFile);
     while 1 <> 0 do
         begin
+            readln(gameFile, rLine);
             if (rLine = '') then
-                break;
+                begin
+                    break;
+                end;
             if (Pos ('[',rLine) <> 0) then
-                rTurn := copy(rLine, 2,2);
+                begin
+                    rTurn := copy(rLine, 2,2);
+                    turn := StrToInt(rTurn);
+                end;
+        end;
+
+    CloseFile(gameFile);
+    {
+        continue extracting lines of text from Chess.txt parsing them
+        for string representations of the pieces
+        then inserting string representation into correct position in 2D array board
+    }
+    rewrite(gameFile);
+    for i := 0 to 7 do
+        begin
+            position := 0;
+            start := 0;
+            readln(gameFile, rLine);
+            for e := 0 to 7 do
+            begin
+            end;
         end;
     recallMove := true;
 end;
