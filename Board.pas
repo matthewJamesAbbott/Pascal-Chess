@@ -15,7 +15,7 @@ type
     private
 
     public
-        constructor create();
+        
         procedure setSquare(x, y: integer; piece: string);
 
         function returnSquare(x, y: integer): string;
@@ -25,11 +25,6 @@ var
     gameBoard : boardArray;
 
 implementation
-
-constructor TBoard.create();
-begin
-
-end;
 
 procedure TBoard.setSquare(x, y: integer; piece: string);
 begin
