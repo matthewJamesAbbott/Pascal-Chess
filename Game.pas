@@ -53,18 +53,18 @@ begin
 end;
 
 {
-load string representations of pieces into 2D array board black bottom
-take note that due to the way the terminal prints 0,0 in 
-the array is 7,0 on the board so this initialises 'White Left Rook'
-to square 8A
+    load string representations of pieces into 2D array board black bottom
+    take note that due to the way the terminal prints 0,0 in 
+    the array is 7,0 on the board so this initialises 'White Left Rook'
+    to square 8A
 }
 
 procedure TGame.initialiseBoard();
 begin
 
     {
-    load white pieces into 2D array starting at 8A
-    finishing at 7H
+        load white pieces into 2D array starting at 8A
+        finishing at 7H
     }
 
     gameBoard.setSquare(0,0,'White Left Rook');
@@ -81,8 +81,8 @@ begin
         end;
 
     {
-    load string representations of empty space into
-    2D array starting at 6A finishing at 3H
+        load string representations of empty space into
+        2D array starting at 6A finishing at 3H
     }
 
     for e:=2 to 5 do
@@ -99,10 +99,10 @@ begin
     gameBoard.setSquare(7,7,'Black Right Rook');
 
     {
-    load string representations of pieces into 2D array board white bottom
-    take note that due to the way the terminal prints 0,0 in
-    the array is 7,0 on the board so this intialises 'Black Left Rook'
-    to square 8A
+        load string representations of pieces into 2D array board white bottom
+        take note that due to the way the terminal prints 0,0 in
+        the array is 7,0 on the board so this intialises 'Black Left Rook'
+        to square 8A
     }
 
 end;
@@ -110,8 +110,8 @@ end;
 procedure TGame.initialiseBoardReverse();
 begin
     {
-    load black pieces into 2D array starting at 8A
-    finishing at 7H
+        load black pieces into 2D array starting at 8A
+        finishing at 7H
     }
 
     gameBoard.setSquare(0,0,'Black Left Rook');
@@ -128,8 +128,8 @@ begin
         end;
 
     {
-    load string representations of empty space into
-    2D array starting at 6A finishing at 3H
+        load string representations of empty space into
+        2D array starting at 6A finishing at 3H
     }
 
     for e := 2 to 5 do
@@ -159,6 +159,13 @@ begin
     gameBoard.setSquare(7,6,'White Right Knight');
     gameBoard.setSquare(7,7,'White Right Rook');
 
+    {
+        read and pares move history from Chess.txt for board layour
+        of last move reset game to board layout giving the user
+        the next turn
+    }
+
+    
 end;
 
 end.
