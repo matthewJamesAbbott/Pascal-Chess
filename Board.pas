@@ -11,7 +11,7 @@ interface
 type
     boardArray = array[0 .. 7,0 .. 7] of string;
 
-    TBoard = class(TObject)
+    TBoard = Object
     private
 
     public
