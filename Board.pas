@@ -3,15 +3,15 @@
 //
 
 {$mode objfpc}
-{$m+}
 
 
 
-program PascalChess;
+unit Board;
+interface
 type
     boardArray = array[0 .. 7,0 .. 7] of string;
 
-    Board = class
+    TBoard = class(TObject)
     private
 
     public
@@ -24,20 +24,21 @@ end;
 var
     gameBoard : boardArray;
 
-constructor Board.create();
+implementation
+
+constructor TBoard.create();
 begin
 
 end;
 
-procedure Board.setSquare(x, y: integer; piece: string);
+procedure TBoard.setSquare(x, y: integer; piece: string);
 begin
     gameBoard[x,y] := piece;
 end;
 
-function Board.returnSquare(x, y: integer): string;
+function TBoard.returnSquare(x, y: integer): string;
 begin
     returnSquare := gameBoard[x,y];
 end;
 
-begin
 end.
