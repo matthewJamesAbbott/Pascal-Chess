@@ -18,8 +18,8 @@ type
         constructor create();
         procedure setPlayerOne(name: string);
         procedure setPlayerTwo(name: string);
-        procedure initialiseBoard();{
-        procedure initialiseBoardReverse();
+        procedure initialiseBoard();
+        procedure initialiseBoardReverse();{
         function recallMove(): boolean;
         procedure loadGame(fileName: string);
         function movePiece(xa, xb: integer; ca, cb: integer): boolean;
@@ -33,7 +33,7 @@ var
     moveEngine: TEngine;}
     clientServerToggle, clientPort, playerSide : integer;
     clientIP : string;
-
+    i, e: integer;
 
 implementation
 
@@ -97,6 +97,35 @@ begin
     gameBoard.setSquare(7,5,'Black Right Bishop');
     gameBoard.setSquare(7,6,'Black Right Knight');
     gameBoard.setSquare(7,7,'Black Right Rook');
+
+    {
+    load string representations of pieces into 2D array board white bottom
+    take note that due to the way the terminal prints 0,0 in
+    the array is 7,0 on the board so this intialises 'Black Left Rook'
+    to square 8A
+    }
+
+end;
+
+procedure TGame.initialiseBoardReverse();
+begin
+    {
+    load black pieces into 2D array starting at 8A
+    finishing at 7H
+    }
+
+    gameBoard.setSquare(0,0,'Black Left Rook');
+    gameBoard.setSquare(0,1,'Black Left Knight');
+    gameBoard.setSquare(0,2,'Black Left Bishop');
+    gameBoard.setSquare(0,3,'Black King');
+    gameBoard.setSquare(0,4,'Black Queen');
+    gameBoard.setSquare(0,5,'Black Right Bishop');
+    gameBoard.setSquare(0,6,'Black Right Knight');
+    gameBoard.setSquare(0,7,'Black Right Rook');
+    for i := 0 to 7 do
+        begin
+            gameBoard.setSquare(1,i,'Black Pawn');
+        end;
 
 
 end;
