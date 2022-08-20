@@ -67,14 +67,37 @@ begin
     finishing at 7H
     }
 
-     gameBoard.setSquare(0,0,'White Left Rook');
-     gameBoard.setSquare(0,1,'White Left Knight');
-     gameBoard.setSquare(0,2,'White Left Bishop');
-     gameBoard.setSquare(0,3,'White King');
-     gameBoard.setSquare(0,4,'White Queen');
-     gameBoard.setSquare(0,5,'White Right Bishop');
-     gameBoard.setSquare(0,6,'White Right Knight');
-     gameBoard.setSquare(0,7,'White Right Rook');
+    gameBoard.setSquare(0,0,'White Left Rook');
+    gameBoard.setSquare(0,1,'White Left Knight');
+    gameBoard.setSquare(0,2,'White Left Bishop');
+    gameBoard.setSquare(0,3,'White King');
+    gameBoard.setSquare(0,4,'White Queen');
+    gameBoard.setSquare(0,5,'White Right Bishop');
+    gameBoard.setSquare(0,6,'White Right Knight');
+    gameBoard.setSquare(0,7,'White Right Rook');
+    for i:=0 to 9 do
+        begin
+            gameBoard.setSquare(1,i,'White Pawn');
+        end;
+
+    {
+    load string representations of empty space into
+    2D array starting at 6A finishing at 3H
+    }
+
+    for e:=2 to 5 do
+        begin
+            gameBoard.setSquare(e,i,'Empty');
+        end;
+    gameBoard.setSquare(7,0,'Black Left Rook');
+    gameBoard.setSquare(7,1,'Black Left Knight');
+    gameBoard.setSquare(7,2,'Black Left Bishop');
+    gameBoard.setSquare(7,3,'Black King');
+    gameBoard.setSquare(7,4,'Black Queen');
+    gameBoard.setSquare(7,5,'Black Right Bishop');
+    gameBoard.setSquare(7,6,'Black Right Knight');
+    gameBoard.setSquare(7,7,'Black Right Rook');
+
 
 end;
 
