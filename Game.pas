@@ -32,7 +32,7 @@ var
     calc: TMoveCalculator;
     moveEngine: TEngine;}
     clientServerToggle, clientPort, playerSide : integer;
-    clientIP,rLine,rTurn,piece: string;
+    clientIP,rLine,rTurn,piece,parsedMove,parsedBracket: string;
     i, e, turn, position, start, stringLength: integer;
     gameFile: TextFile;
 
@@ -187,102 +187,130 @@ begin
         end;
 
     closefile(gameFile);
-    {
-        continue extracting lines of text from Chess.txt parsing them
-        for string representations of the pieces
-        then inserting string representation into correct position in 2D array board
-    }
-    rewrite(gameFile);
-    for i := 0 to 7 do
+
+    if turn > 2 then // test if there have been enough turns to have a game state recorded
         begin
-            position := 0;
-            start := 0;
-            readln(gameFile, rLine);
-            for e := 0 to 7 do
+            {
+                open Chess.txt extract lines of text until 2 turns
+                before current leaving stream open when finished
+            }
+
+            rewrite(gameFile);
+            parsedBracket := '[';
+            parsedMove := concat(parsedMove, inttostr(turn - 2));
+            while 1 <> 0 do
                 begin
-                    position := pos(',', rLine);
-                    stringLength := position - start;
-                    piece := copy(rLine, start, stringLength);
-                    start := position + 1;
-                    if piece = 'wlR' then
+                readln(gameFile, rLine);
+                if (rLine = '') then
+                    begin
+                        break;
+                    end;
+                if (Pos (parsedMove,rLine) = 0) then
+                    begin
+                        readln(gameFile,rLine);
+                        readln(gameFile,rLine);
+                        readln(gameFile,rLine);
+                        break;
+                    end;
+            end;
+
+            {
+                continue extracting lines of text from Chess.txt parsing them
+                for string representations of the pieces
+                then inserting string representation into correct position in 2D array board
+            }
+            rewrite(gameFile);
+            for i := 0 to 7 do
+                begin
+                    position := 0;
+                    start := 0;
+                    readln(gameFile, rLine);
+                    for e := 0 to 7 do
                         begin
-                            gameBoard.setSquare(e, i, 'White Left Rook');
-                        end;
-                    if piece = 'wlN' then
-                        begin
-                            gameBoard.setSquare(e, i, 'White Left Knight');
-                        end;
-                    if piece = 'wlB' then
-                        begin
-                            gameBoard.setSquare(e, i, 'White Left Bishop');
-                        end;
-                    if piece = 'wK' then 
-                        begin
-                            gameBoard.setSquare(e, i, 'White King');
-                        end;
-                    if piece = 'wQ' then
-                        begin
-                            gameBoard.setSquare(e, i, 'White Queen');
-                        end;
-                    if piece = 'wrB' then
-                        begin
-                            gameBoard.setSquare(e, i, 'White Right Bishop');
-                        end;
-                    if piece = 'wrN' then
-                        begin
-                            gameBoard.setSquare(e, i, 'White Right Knight');
-                        end;
-                    if piece = 'wrR' then
-                        begin
-                            gameBoard.setSquare(e, i, 'White Right Rook');
-                        end;
-                    if piece = 'wP' then
-                        begin
-                            gameBoard.setSquare(e, i, 'White Pawn');
-                        end;
-                    if piece = 'blR' then
-                        begin
-                            gameBoard.setSquare(e, i, 'Black Left Rook');
-                        end;
-                    if piece = 'blN' then
-                        begin
-                            gameBoard.setSquare(e, i, 'Black Left Knight');
-                        end;
-                    if piece = 'blB' then
-                        begin
-                            gameBoard.setSquare(e, i, 'Black Left Bishop');
-                        end;
-                    if piece = 'bK' then
-                        begin
-                            gameBoard.setSquare(e, i, 'Black King');
-                        end;
-                    if piece = 'bQ' then
-                        begin
-                            gameBoard.setSquare(e, i, 'Black Queen');
-                        end;
-                    if piece = 'brB' then
-                        begin
-                            gameBoard.setSquare(e, i, 'Black Right Bishop');
-                        end;
-                    if piece = 'brN' then
-                        begin
-                            gameBoard.setSquare(e, i, 'Black Right Knight');
-                        end;
-                    if piece = 'brR' then
-                        begin
-                            gameBoard.setSquare(e, i, 'Black Right Rook');
-                        end;
-                    if piece = 'bP' then
-                        begin
-                            gameBoard.setSquare(e, i, 'Black Pawn');
-                        end;
-                    if piece = 'X' then
-                        begin
-                            gameBoard.setSquare(e, i, 'Empty');
+                            position := pos(',', rLine);
+                            stringLength := position - start;
+                            piece := copy(rLine, start, stringLength);
+                            start := position + 1;
+                            if piece = 'wlR' then
+                                begin
+                                    gameBoard.setSquare(e, i, 'White Left Rook');
+                                end;
+                            if piece = 'wlN' then
+                                begin
+                                    gameBoard.setSquare(e, i, 'White Left Knight');
+                                end;
+                            if piece = 'wlB' then
+                                begin
+                                    gameBoard.setSquare(e, i, 'White Left Bishop');
+                                end;
+                            if piece = 'wK' then 
+                                begin
+                                    gameBoard.setSquare(e, i, 'White King');
+                                end;
+                            if piece = 'wQ' then
+                                begin
+                                    gameBoard.setSquare(e, i, 'White Queen');
+                                end;
+                            if piece = 'wrB' then
+                                begin
+                                    gameBoard.setSquare(e, i, 'White Right Bishop');
+                                end;
+                            if piece = 'wrN' then
+                                begin
+                                    gameBoard.setSquare(e, i, 'White Right Knight');
+                                end;
+                            if piece = 'wrR' then
+                                begin
+                                    gameBoard.setSquare(e, i, 'White Right Rook');
+                                end;
+                            if piece = 'wP' then
+                                begin
+                                    gameBoard.setSquare(e, i, 'White Pawn');
+                                end;
+                            if piece = 'blR' then
+                                begin
+                                    gameBoard.setSquare(e, i, 'Black Left Rook');
+                                end;
+                            if piece = 'blN' then
+                                begin
+                                    gameBoard.setSquare(e, i, 'Black Left Knight');
+                                end;
+                            if piece = 'blB' then
+                                begin
+                                    gameBoard.setSquare(e, i, 'Black Left Bishop');
+                                end;
+                            if piece = 'bK' then
+                                begin
+                                    gameBoard.setSquare(e, i, 'Black King');
+                                end;
+                            if piece = 'bQ' then
+                                begin
+                                    gameBoard.setSquare(e, i, 'Black Queen');
+                                end;
+                            if piece = 'brB' then
+                                begin
+                                    gameBoard.setSquare(e, i, 'Black Right Bishop');
+                                end;
+                            if piece = 'brN' then
+                                begin
+                                    gameBoard.setSquare(e, i, 'Black Right Knight');
+                                end;
+                            if piece = 'brR' then
+                                begin
+                                    gameBoard.setSquare(e, i, 'Black Right Rook');
+                                end;
+                            if piece = 'bP' then
+                                begin
+                                    gameBoard.setSquare(e, i, 'Black Pawn');
+                                end;
+                            if piece = 'X' then
+                                begin
+                                    gameBoard.setSquare(e, i, 'Empty');
+                                end;
                         end;
                 end;
+            closefile(gameFile);
+            recallMove := true;
         end;
-    closefile(gameFile);
-    recallMove := true;
 end;
 end.
