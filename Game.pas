@@ -32,8 +32,8 @@ var
     calc: TMoveCalculator;
     moveEngine: TEngine;}
     clientServerToggle, clientPort, playerSide : integer;
-    clientIP,rLine,rTurn: string;
-    i, e, turn, position, start: integer;
+    clientIP,rLine,rTurn,piece: string;
+    i, e, turn, position, start, stringLength: integer;
     gameFile: TextFile;
 
 implementation
@@ -170,7 +170,7 @@ end;
 
 function TGame.recallMove(): boolean;
 begin
-    AssignFile(gameFile, 'Chess.txt');
+    assignfile(gameFile, 'Chess.txt');
     rewrite(gameFile);
     while 1 <> 0 do
         begin
@@ -186,7 +186,7 @@ begin
                 end;
         end;
 
-    CloseFile(gameFile);
+    closefile(gameFile);
     {
         continue extracting lines of text from Chess.txt parsing them
         for string representations of the pieces
@@ -201,6 +201,30 @@ begin
             for e := 0 to 7 do
                 begin
                     position := pos(',', rLine);
+                    stringLength := position - start;
+                    piece := copy(rLine, start, stringLength);
+                    start := position + 1;
+                    if piece = 'wlR' then
+                        begin
+                            gameBoard.setSquare(e, i, 'White Left Rook');
+                        end;
+                    if piece = 'wlN' then
+                        begin
+                            gameBoard.setSquare(e, i, 'White Left Knight');
+                        end;
+                    if piece = 'wlB' then
+                        begin
+                            gameBoard.setSquare(e, i, 'White Left Bishop');
+                        end;
+                    if piece = 'wK' then 
+                        begin
+                            gameBoard.setSquare(e, i, 'White King');
+                        end;
+                    if piece = 'wQ' then
+                        begin
+                            gameBoard.setSquare(e, i, 'White Queen');
+                        end;
+
                 end;
         end;
     recallMove := true;
