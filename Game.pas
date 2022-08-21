@@ -224,9 +224,68 @@ begin
                         begin
                             gameBoard.setSquare(e, i, 'White Queen');
                         end;
+                    if piece = 'wrB' then
+                        begin
+                            gameBoard.setSquare(e, i, 'White Right Bishop');
+                        end;
+                    if piece = 'wrN' then
+                        begin
+                            gameBoard.setSquare(e, i, 'White Right Knight');
+                        end;
+                    if piece = 'wrR' then
+                        begin
+                            gameBoard.setSquare(e, i, 'White Right Rook');
+                        end;
+                    if piece = 'wP' then
+                        begin
+                            gameBoard.setSquare(e, i, 'White Pawn');
+                        end;
+                    if piece = 'blR' then
+                        begin
+                            gameBoard.setSquare(e, i, 'Black Left Rook');
+                        end;
+                    if piece = 'blN' then
+                        begin
+                            gameBoard.setSquare(e, i, 'Black Left Knight');
+                        end;
+                    if piece = 'blB' then
+                        begin
+                            gameBoard.setSquare(e, i, 'Black Left Bishop');
+                        end;
+                    if piece = 'bK' then
+                        begin
+                            gameBoard.setSquare(e, i, 'Black King');
+                        end;
+                    if piece = 'bQ' then
+                        begin
+                            gameBoard.setSquare(e, i, 'Black Queen');
+                        end;
+                    if piece = 'brB' then
+                        begin
+                            gameBoard.setSquare(e, i, 'Black Right Bishop');
+                        end;
+                    if piece = 'brN' then
+                        begin
+                            gameBoard.setSquare(e, i, 'Black Right Knight');
+                        end;
+                    if piece = 'brR' then
+                        begin
+                            gameBoard.setSquare(e, i, 'Black Right Rook');
+                        end;
+                    if piece = 'bP' then
+                        begin
+                            gameBoard.setSquare(e, i, 'Black Pawn');
+                        end;
+                    if piece = 'X' then
+                        begin
+                            gameBoard.setSquare(e, i, 'Empty');
+                        end;
+
+ 
 
                 end;
         end;
+    closefile(gameFile);
     recallMove := true;
 end;
 end.
