@@ -280,9 +280,6 @@ begin
                         begin
                             gameBoard.setSquare(e, i, 'Empty');
                         end;
-
- 
-
                 end;
         end;
     closefile(gameFile);
