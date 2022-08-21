@@ -188,7 +188,7 @@ begin
 
     closefile(gameFile);
 
-    if turn > 2 then // test if there have been enough turns to have a game state recorded
+    if turn > 2 then {test if there have been enough turns to have a game state recorded}
         begin
             {
                 open Chess.txt extract lines of text until 2 turns
@@ -309,8 +309,17 @@ begin
                                 end;
                         end;
                 end;
-            closefile(gameFile);
-            recallMove := true;
+            closefile(gameFile); {close file stream}
+            recallMove := true; {did something}
         end;
+
+    if turn = 2 then {game is in second turn and can be taken back to board initialisation for recallMove}
+        begin
+            initialiseBoard();
+            recallMove := true; {did something}
+        end;
+    recallMove := false; {did nothing game is already at base initialisation no more to recall}
 end;
+
+
 end.
