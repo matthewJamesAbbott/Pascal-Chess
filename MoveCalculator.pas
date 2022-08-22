@@ -20,8 +20,8 @@ type
     TMoveCalculator = Object
 
     private
-        procedure addNode( inputX, inputY, inputSquareRank: integer );{
-        function returnVector(): integerArray;
+        procedure addNode( inputX, inputY, inputSquareRank: integer );
+        function returnVector(): string;{
         function returnWeightedVector(): integerArray;}
 
 
@@ -37,7 +37,6 @@ type
    end;
 var
     head, tail: node;
-    iterator: integer;
 
 implementation
 
@@ -79,7 +78,6 @@ var temp: node;
 begin
     moveVector := '';
     temp := head;
-    iterator := 1;
     while temp <> nil do
         begin
             concat1 := moveVector;
