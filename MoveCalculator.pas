@@ -71,7 +71,7 @@ end;
     serialise possibleSquares list into string moveVector
 }
 
-function returnVector(): string;
+function TMoveCalculator.returnVector(): string;
 var temp: node;
     moveVector, concat1: string;
 
