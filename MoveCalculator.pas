@@ -21,8 +21,8 @@ type
 
     private
         procedure addNode( inputX, inputY, inputSquareRank: integer );
-        function returnVector(): string;{
-        function returnWeightedVector(): integerArray;}
+        function returnVector(): string;
+        function returnWeightedVector(): string;
 
 
     public
@@ -85,5 +85,21 @@ begin
             temp := temp^.next;
         end;
     returnVector := moveVector;
+end;
+
+function TMoveCalculator.returnWeightedVector(): string;
+var temp: node;
+    moveVector, concat1: string;
+
+begin
+    moveVector := '';
+    temp := head;
+    while temp <> nil do
+        begin
+            concat1 := moveVector;
+            moveVector := concat(concat1,inttostr(temp^.x),inttostr(temp^.y),inttostr(temp^.squareRank));
+            temp := temp^.next;
+        end;
+    returnWeightedVector := moveVector;
 end;
 end.
