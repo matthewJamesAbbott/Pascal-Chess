@@ -49,6 +49,8 @@ const
 
 var
     head, tail: node;
+    gameFile: TextFile;
+    rLine: string;
 
 implementation
 
@@ -125,12 +127,112 @@ end;
 
 function TMoveCalculator.evaluatePiece(inputX, inputY, side: integer; moveBoard: TBoard): integer;
 begin
+    assignfile(gameFile, 'Chess.txt');
+    rewrite(gameFile);
     if side = 1 then
         begin
+            if moveBoard.returnSquare(inputX, inputY) = 'Black Pawn' then
+                begin
+                    evaluatePiece := PAWN;
+                end;
             if moveBoard.returnSquare(inputX, inputY) = 'Black Left Knight' then
-                    evaluatePiece := KING;
+                begin
+                    evaluatePiece := KNIGHT;
+                end;
             if moveBoard.returnSquare(inputX, inputY) = 'Black Right Knight' then
+                begin
+                    evaluatePiece := KNIGHT;
+                end;
+            if moveBoard.returnSquare(inputX, inputY) = 'Black Left Bishop' then
+                begin
+                    evaluatePiece := BISHOP;
+                end;
+            if moveBoard.returnSquare(inputX, inputY) = 'Black Right Bishop' then
+                begin
+                    evaluatePiece := BISHOP;
+                end;
+            if moveBoard.returnSquare(inputX, inputY) = 'Black Left Rook' then
+                begin
+                    evaluatePiece := ROOK;
+                end;
+            if moveBoard.returnSquare(inputX, inputY) = 'Black Right Rook' then
+                begin
+                    evaluatePiece := ROOK;
+                end;
+            if moveBoard.returnSquare(inputX, inputY) = 'Black Queen' then
+                begin
+                    evaluatePiece := QUEEN;
+                end;
+            if moveBoard.returnSquare(inputX, inputY) = 'Black King' then
+                begin
                     evaluatePiece := KING;
+                end;
+            if moveBoard.returnSquare(inputX, inputY) = 'Empty' then
+                begin
+                    evaluatePiece := EMPTY;
+                end;
+        end
+        
+    else
+        begin
+            if moveBoard.returnSquare(inputX, inputY) = 'White Pawn' then
+                begin
+                    evaluatePiece := PAWN;
+                end;
+            if moveBoard.returnSquare(inputX, inputY) = 'White Left Knight' then
+                begin
+                    evaluatePiece := KNIGHT;
+                end;
+            if moveBoard.returnSquare(inputX, inputY) = 'White Right Knight' then
+                begin
+                    evaluatePiece := KNIGHT;
+                end;
+            if moveBoard.returnSquare(inputX, inputY) = 'White Left Bishop' then
+                begin
+                    evaluatePiece := BISHOP;
+                end;
+            if moveBoard.returnSquare(inputX, inputY) = 'White Right Bishop' then
+                begin
+                    evaluatePiece := BISHOP;
+                end;
+            if moveBoard.returnSquare(inputX, inputY) = 'White Left Rook' then
+                begin
+                    evaluatePiece := ROOK;
+                end;
+            if moveBoard.returnSquare(inputX, inputY) = 'White Right Rook' then
+                begin
+                    evaluatePiece := ROOK;
+                end;
+            if moveBoard.returnSquare(inputX, inputY) = 'White Queen' then
+                begin
+                    evaluatePiece := QUEEN;
+                end;
+            if moveBoard.returnSquare(inputX, inputY) = 'White King' then
+                begin
+                    evaluatePiece := KING;
+                end;
+        end;
+end;
+
+{
+    check if king or left rook has been moved
+    by looking through past moves in Chess.tst
+    return false if king or left rook has been moved
+    else return true to allow castle move to continue
+}
+
+function enPassantCheck(side: integer): integer;
+begin
+    while 1 <> 0 do
+        begin
+            readln(gameFile, rLine);
+            if (rLine = '') then
+                begin
+                    break;
+                end;
+            if side = WHITE then
+                begin
+                end;
         end;
 end;
 end.
