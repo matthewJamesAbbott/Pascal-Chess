@@ -69,7 +69,7 @@ begin
 end;
 
 {
-    serialise possibleSquares list into dynamic array moveVector
+    serialise possibleSquares list into string moveVector
 }
 
 function returnVector(): string;
