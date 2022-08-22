@@ -321,5 +321,10 @@ begin
     recallMove := false; {did nothing game is already at base initialisation no more to recall}
 end;
 
-
+{
+    test if computer is in checkmate
+    calculate a computer generated move with object Engine
+    input piece at correct position in 2D array board and replace pieces original position with 'Empty'
+    record computers move in game state file through object MoveRecorder
+}
 end.
