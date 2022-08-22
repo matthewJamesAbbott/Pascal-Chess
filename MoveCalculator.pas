@@ -31,10 +31,22 @@ type
         function enPassantCheck(side: integer): integer;
         function possibleSquares2DArray(x, y, side: integer; moveBoard: TBoard): integerArray;
         function checkCalculator(x, y, side: integer; moveBoard: TBoard);
-        function checkMateTest(x, y, side: integer; moveBoard: TBoard);
-        function evaluatePiece(x, y, side: integer; moveBoard: TBoard);}
+        function checkMateTest(x, y, side: integer; moveBoard: TBoard);}
+        function evaluatePiece(inputX, inputY, side: integer; moveBoard: TBoard): integer;
 
    end;
+
+const
+    PAWN = 2;
+    KNIGHT = 3;
+    BISHOP = 4;
+    ROOK = 5;
+    QUEEN = 9;
+    KING = 10;
+    EMPTY = 0;
+    BLACK = 0;
+    WHITE = 1;
+
 var
     head, tail: node;
 
@@ -87,6 +99,10 @@ begin
     returnVector := moveVector;
 end;
 
+{
+    serialise possibleSquares list into string moveVector with piece weights included
+}
+
 function TMoveCalculator.returnWeightedVector(): string;
 var temp: node;
     moveVector, concat1: string;
@@ -101,5 +117,20 @@ begin
             temp := temp^.next;
         end;
     returnWeightedVector := moveVector;
+end;
+
+{
+    evaluate square on moveBoard for piece rank
+}
+
+function TMoveCalculator.evaluatePiece(inputX, inputY, side: integer; moveBoard: TBoard): integer;
+begin
+    if side = 1 then
+        begin
+            if moveBoard.returnSquare(inputX, inputY) = 'Black Left Knight' then
+                    evaluatePiece := KING;
+            if moveBoard.returnSquare(inputX, inputY) = 'Black Right Knight' then
+                    evaluatePiece := KING;
+        end;
 end;
 end.
