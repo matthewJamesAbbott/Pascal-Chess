@@ -8,7 +8,7 @@ unit MoveCalculator;
 interface
 
 uses
-Board;
+Board,Sysutils;
 type
 
     integerArray = array of integer;
@@ -37,6 +37,7 @@ type
    end;
 var
     head, tail: node;
+    iterator: integer;
 
 implementation
 
@@ -59,12 +60,32 @@ begin
         begin
             temp := head;
             while temp^.next <> nil do
-            begin
-                temp := temp^.next;
-            end;
-            temp^.next := newNode;
+                begin
+                    temp := temp^.next;
+                end;
+                temp^.next := newNode;
 
         end;
 end;
 
+{
+    serialise possibleSquares list into dynamic array moveVector
+}
+
+function returnVector(): string;
+var temp: node;
+    moveVector, concat1: string;
+
+begin
+    moveVector := '';
+    temp := head;
+    iterator := 1;
+    while temp <> nil do
+        begin
+            concat1 := moveVector;
+            moveVector := concat(concat1,inttostr(temp^.x),inttostr(temp^.y));
+            temp := temp^.next;
+        end;
+    returnVector := moveVector;
+end;
 end.
