@@ -216,7 +216,7 @@ end;
 
 {
     check if king or left rook has been moved
-    by looking through past moves in Chess.tst
+    by looking through past moves in Chess.txt
     return false if king or left rook has been moved
     else return true to allow castle move to continue
 }
