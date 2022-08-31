@@ -221,8 +221,10 @@ end;
     else return true to allow castle move to continue
 }
 
-function enPassantCheck(side: integer): integer;
+
+function castleCheck(side: integer): boolean;
 begin
+    rewrite(gameFile, 'Chess.txt');
     while 1 <> 0 do
         begin
             readln(gameFile, rLine);
@@ -232,7 +234,33 @@ begin
                 end;
             if side = WHITE then
                 begin
-                end;
+                    if pos('(0,3') <> 0 then
+                        begin
+                            closefile(gameFile);
+                            castleCheck := false
+                        end
+                        else if pos('(0,0') <> 0 then
+                            begin
+                                closefile(gameFile);
+                                castleCheck := false;
+                            end;
+                end
+                else if side = BLACK then
+                    begin
+                        if pos('(7,3') <> 0 then
+                            begin
+                                closefile(gameFile);
+                                castleCheck := false
+                            end
+                            else if pos('(7,0') <> 0 then
+                                begin
+                                    closefile(gameFile);
+                                    castleCheck := false
+                                end
+                    end;
+                closefile(gameFile);
+                castleCheck := false;
+                            
         end;
 end;
 end.
