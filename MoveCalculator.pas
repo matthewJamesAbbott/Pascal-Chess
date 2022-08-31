@@ -222,7 +222,11 @@ end;
 }
 
 
-function castleCheck(side: integer): boolean;
+function TMoveCalculator.castleCheck(side: integer): boolean;
+
+var
+    rLine: string;
+
 begin
     rewrite(gameFile, 'Chess.txt');
     while 1 <> 0 do
@@ -262,5 +266,27 @@ begin
                 castleCheck := false;
                             
         end;
+end;
+
+function TMoveCalculator.enpassantCheck(side: integer): integer;
+
+var
+    rLine: string;
+    turn: integer;
+
+begin
+    rewrite(gameFile, 'Chess.txt');
+    while 1 <> 0 do
+        begin
+            readln(gameFile, rLine);
+            if pos('[') = 0 then
+                if 
+                begin
+                    strtoint(copy(rLine,2,2);
+                end;
+        end;
+        closefile(gameFile);
+        rewrite(gameFile, 'Chess.txt');
+        while 
 end;
 end.
