@@ -6,20 +6,3 @@ book on pascal algorithms.
 
 thank you Nigel
 
-thats four one more till bjarnes five.
-
-I think java script chess is next.
-
-then bug fixes and gui from c++ fixed for all then finally a rewrite
-of all five into more native oop for each language.
-
-
-Note on this version of the game.
-
-Pascal is seriously cross platform these days and making gui interfaces
-and applications is very easy and painless compared to other languages due
-to lazarus.
-
-this version will hold both android and ios version of the game in its compile directory
-
-when the gui has been ported.
