@@ -8,7 +8,7 @@ unit MoveCalculator;
 interface
 
 uses
-Board,Sysutils;
+Board,HeapLinkedList,Sysutils;
 type
 
     integerArray = array of integer;
@@ -238,12 +238,12 @@ begin
                 end;
             if side = WHITE then
                 begin
-                    if pos('(0,3') <> 0 then
+                    if pos('(0,3', rLine) <> 0 then
                         begin
                             closefile(gameFile);
                             castleCheck := false
                         end
-                        else if pos('(0,0') <> 0 then
+                        else if pos('(0,0', rLine) <> 0 then
                             begin
                                 closefile(gameFile);
                                 castleCheck := false;
@@ -251,12 +251,12 @@ begin
                 end
                 else if side = BLACK then
                     begin
-                        if pos('(7,3') <> 0 then
+                        if pos('(7,3', rLine) <> 0 then
                             begin
                                 closefile(gameFile);
                                 castleCheck := false
                             end
-                            else if pos('(7,0') <> 0 then
+                            else if pos('(7,0', rLine) <> 0 then
                                 begin
                                     closefile(gameFile);
                                     castleCheck := false
@@ -279,7 +279,7 @@ begin
     while 1 <> 0 do
         begin
             readln(gameFile, rLine);
-            if pos('[') = 0 then 
+            if pos('[', rLine) = 0 then 
                 begin
                     turn := strtoint(copy(rLine,2,2);
                 end;
@@ -334,4 +334,27 @@ begin
             enpassant := 10;
         
 end;
+
+procedure TMoveCalculator.possibleSquares2DArray(x, y, side: integer, moveBoard: TBoard);
+
+var
+    piece: string;
+    list: THeapLinkedList;
+    iterator: integer;
+
+begin
+    piece := moveBoard.returnSquare(x,y);
+    list := THeapLinkedList.create;
+    case(piece) of
+        'White Left Rook' :
+            begin
+                for iterator = x + 1 to 7 do
+                    begin
+                        if moveBoard.returnSquare(i,y) = "Empty" then
+                            list.addNode(i, y, evaluatPiece(i, y, moveBoard, 1))
+                        else if x < 8 then
+                            begin
+                                if pos('White', moveBoard.returnSquare(i,y)) = 0 then
+                                    begin
+                                        list.addNode()
 end.
