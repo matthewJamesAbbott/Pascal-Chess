@@ -271,22 +271,67 @@ end;
 function TMoveCalculator.enpassantCheck(side: integer): integer;
 
 var
-    rLine: string;
-    turn: integer;
+    rLine, tempString: string;
+    turn,x,y,xa,ya: integer;
 
 begin
     rewrite(gameFile, 'Chess.txt');
     while 1 <> 0 do
         begin
             readln(gameFile, rLine);
-            if pos('[') = 0 then
-                if 
+            if pos('[') = 0 then 
                 begin
-                    strtoint(copy(rLine,2,2);
+                    turn := strtoint(copy(rLine,2,2);
                 end;
+            if rLine = nil then
+                break;
         end;
         closefile(gameFile);
         rewrite(gameFile, 'Chess.txt');
-        while 
+        while 1 <> 0 do
+            begin
+                readln(gameFile, rLine);
+                tempString := concat('[',inttostr(turn)); 
+                if pos(tempString) = 0 then
+                    begin
+                        readln(gameFile, rLine);
+                        break;
+                    end;
+            end;
+        if rLine <> '' then
+            begin
+                x := copy(rLine,2,1);
+                y := copy(rLine,4,1);
+                xa := copy(rLine,6,1);
+                ya := copy(rLine,8,1);
+                if side = BLACK then
+                    begin
+                        if x = 1 then
+                            begin
+                                if xa = 3 then
+                                    begin
+                                        if y = ya then
+                                            begin
+                                                enpassantCheck := y;
+                                            end;
+                                    end;
+                            end;
+                    end;
+                if side = WHITE then
+                    begin
+                        if x = 6 then
+                            begin
+                                if xa = 4 then
+                                    begin
+                                        if y = ya then
+                                            begin
+                                                enpassantCheck := y;
+                                            end;
+                                    end;
+                            end;
+                    end;
+            end;
+            enpassant := 10;
+        
 end;
 end.
