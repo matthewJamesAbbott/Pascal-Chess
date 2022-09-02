@@ -51,6 +51,7 @@ var
     head, tail: node;
     gameFile: TextFile;
     rLine: string;
+    listPointerVar: listPointer;
 
 implementation
 
@@ -346,15 +347,81 @@ begin
     piece := moveBoard.returnSquare(x,y);
     list := THeapLinkedList.create;
     case(piece) of
-        'White Left Rook' :
+        'White Left Rook':
             begin
                 for iterator = x + 1 to 7 do
                     begin
-                        if moveBoard.returnSquare(i,y) = "Empty" then
-                            list.addNode(i, y, evaluatPiece(i, y, moveBoard, 1))
+                        if moveBoard.returnSquare(iterator,y) = 'Empty' then
+                            list.addNode(iterator, y, evaluatePiece(iterator, y, moveBoard, 1))
                         else if x < 8 then
                             begin
-                                if pos('White', moveBoard.returnSquare(i,y)) = 0 then
+                                if pos('White', moveBoard.returnSquare(iterator,y)) = 0 then
                                     begin
-                                        list.addNode()
+                                        list.addNode(iterator, y, evaluatePiece(iterator, y, moveBoard, 1));
+                                        break;
+                                    end
+                            end
+                            else if moveBoard.returnSquare(iterator,y) <> 'Empty' then
+                                break;
+                    end;
+                for iterator = x - 1 downto 0 do
+                    begin
+                        if moveBoard.returnSquare(iterator,y) = 'Empty' then
+                            list.addNode(iterator, y, evaluatePiece(iterator, y, moveBoard, 1))
+                        else if x >= 0 then
+                            begin
+                                if pos('White', moveBoard.returnSquare(iterator,y)) = 0 then
+                                    begin
+                                        list.addNode(iterator, y, evaluatePiece(iterator, y, moveBoard, 1));
+                                        break;
+                                    end
+                            end
+                            else if moveBoard.returnSquare(iterator,y) <> 'Empty' then
+                                break;
+                    end;
+                for iterator = y + 1 to 7 do
+                    begin
+                        if moveBoard.returnSquare(x,iterator) = 'Empty' then
+                            list.addNode(x, iterator, evaluatePiece(x, iterator, moveBoard, 1))
+                        else if x >= 0 then
+                            begin
+                                if pos('White', moveBoard.returnSquare(x,iterator)) = 0 then
+                                    begin
+                                        list.addNode(x,iterator, evaluatePiece(x,iterator, moveBoard, 1));
+                                        break;
+                                    end
+                            end
+                            else if moveBoard.returnSquare(x,iterator) <> 'Empty' then
+                                break;
+                    end;
+                for iterator = y - 1 downto 0 do
+                    begin
+                        if moveBoard.returnSquare(x,iterator) = 'Empty' then
+                            list.addNode(x, iterator, evaluatePiece(x, iterator, moveBoard, 1))
+                        else if x >= 0 then
+                            begin
+                                if pos('White', moveBoard.returnSquare(x,iterator)) = 0 then
+                                    begin
+                                        list.addNode(x,iterator, evaluatePiece(x,iterator, moveBoard, 1));
+                                        break;
+                                    end
+                            end
+                            else if moveBoard.returnSquare(x,iterator) <> 'Empty' then
+                                break;
+                    end;
+                possibleSquares2DArray := @list;
+            end;
+
+        'White Left Knight':
+            begin
+                if x < 6 then
+                    begin
+                        if y < 7 then
+                            begin
+                                if moveBoard.returnSquare(x+2,y+1) = 'Empty' then
+                                    begin
+                                        list.addNode(x+2,y+1, evaluatePiece(x+2,y+1,moveBoard,1))
+                                    end
+                                    else if
+
 end.
