@@ -422,6 +422,116 @@ begin
                                     begin
                                         list.addNode(x+2,y+1, evaluatePiece(x+2,y+1,moveBoard,1))
                                     end
-                                    else if
+                                    else if pos('White', moveBoard.returnSquare(x+2,y+1)) = 0 then
+                                        begin
+                                            list.addNode(x+2,y+1, evaluatePiece(x+2,y+1,moveBoard,1));
+                                        end;
+                            end;
+                 if x < 6 then
+                    begin
+                        if y > 0 then
+                            begin
+                                if moveBoard.returnSquare(x+2,y-1) = 'Empty' then
+                                    begin
+                                        list.addNode(x+2,y-1, evaluatePiece(x+2,y-1,moveBoard,1))
+                                    end
+                                    else if pos('White', moveBoard.returnSquare(x+2,y-1)) = 0 then
+                                        begin
+                                            list.addNode(x+2,y-1, evaluatePiece(x+2,y-1,moveBoard,1));
+                                        end;
+                            end;
+                    end;
+
+                 if x < 7 then
+                    begin
+                        if y < 6 then
+                            begin
+                                if moveBoard.returnSquare(x+1,y+2) = 'Empty' then
+                                    begin
+                                        list.addNode(x+1,y+2, evaluatePiece(x+1,y+2,moveBoard,1))
+                                    end
+                                    else if pos('White', moveBoard.returnSquare(x+1,y+2)) = 0 then
+                                        begin
+                                            list.addNode(x+1,y+2, evaluatePiece(x+1,y+2,moveBoard,1));
+                                        end;
+                            end;
+                    end;
+                  if x < 7 then
+                    begin
+                        if y > 1 then
+                            begin
+                                if moveBoard.returnSquare(x+1,y-2) = 'Empty' then
+                                    begin
+                                        list.addNode(x+1,y-2, evaluatePiece(x+1,y-2,moveBoard,1))
+                                    end
+                                    else if pos('White', moveBoard.returnSquare(x+1,y-2)) = 0 then
+                                        begin
+                                            list.addNode(x+1,y-2, evaluatePiece(x+1,y-2,moveBoard,1));
+                                        end;
+                            end;
+                    end;
+
+                if x > 1 then
+                    begin
+                        if y < 7 then
+                            begin
+                                if moveBoard.returnSquare(x-2,y+1) = 'Empty' then
+                                    begin
+                                        list.addNode(x-2,y+1, evaluatePiece(x-2,y+1,moveBoard,1))
+                                    end
+                                    else if pos('White', moveBoard.returnSquare(x-2,y+1)) = 0 then
+                                        begin
+                                            list.addNode(x-2,y+1, evaluatePiece(x-2,y+1,moveBoard,1));
+                                        end;
+                            end;
+                if x > 1 then
+                    begin
+                        if y > 0 then
+                            begin
+                                if moveBoard.returnSquare(x-2,y-1) = 'Empty' then
+                                    begin
+                                        list.addNode(x-2,y-1, evaluatePiece(x-2,y-1,moveBoard,1))
+                                    end
+                                    else if pos('White', moveBoard.returnSquare(x-2,y-1)) = 0 then
+                                        begin
+                                            list.addNode(x-2,y-1, evaluatePiece(x-2,y-1,moveBoard,1));
+                                        end;
+                            end;
+                    end;
+
+                if x > 0 then
+                    begin
+                        if y < 6 then
+                            begin
+                                if moveBoard.returnSquare(x-1,y+2) = 'Empty' then
+                                    begin
+                                        list.addNode(x-1,y+2, evaluatePiece(x-1,y+2,moveBoard,1))
+                                    end
+                                    else if pos('White', moveBoard.returnSquare(x-1,y+2)) = 0 then
+                                        begin
+                                            list.addNode(x-1,y+2, evaluatePiece(x-1,y+2,moveBoard,1));
+                                        end;
+                            end;
+                if x > 0 then
+                    begin
+                        if y < 1 then
+                            begin
+                                if moveBoard.returnSquare(x-1,y-2) = 'Empty' then
+                                    begin
+                                        list.addNode(x-1,y-2, evaluatePiece(x-1,y-2,moveBoard,1))
+                                    end
+                                    else if pos('White', moveBoard.returnSquare(x-1,y-2)) = 0 then
+                                        begin
+                                            list.addNode(x-1,y-2, evaluatePiece(x-1,y-2,moveBoard,1));
+                                        end;
+                            end;
+                    end;
+
+            end;
+
+end;
+
+
+
 
 end.
