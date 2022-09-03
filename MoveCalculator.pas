@@ -526,7 +526,7 @@ begin
                                         end;
                             end;
                     end;
-
+            possibleSquares2DArray := &list;
             end;
 
 end;
