@@ -339,7 +339,7 @@ end;
 procedure TMoveCalculator.possibleSquares2DArray(x, y, side: integer, moveBoard: TBoard);
 
 var
-    piece, switchedPiece, opponentColour: string;
+    piece, switchedPiece, opponentColour, playerColour: string;
     list: THeapLinkedList;
     xIterator, yIterator: integer;
 
@@ -349,11 +349,13 @@ begin
         switchedPiece := 'Rook';
     if pos('Knight', piece) != 0 then
         switchedPiece := 'Knight';
-    if pos('Bishop', piece) != 0 then
+    if pos('Bishop', piece) != 0 then 
         switchedPiece := 'Bishop';
     if side = BLACK then
         opponentColour := 'White'
+        playerColour := 'Black';
         else
+            playerColour := 'White';
             opponentColour := 'Black';
 
     list := THeapLinkedList.create;
@@ -364,61 +366,51 @@ begin
                     begin
                         if moveBoard.returnSquare(xIterator,y) = 'Empty' then
                             list.addNode(xIterator, y, evaluatePiece(iterator, y, moveBoard, side))
-                        else if x < 8 then
+                        else if pos(opponentColour, moveBoard.returnSquare(xIterator,y)) != 0 then
                             begin
-                                if pos(opponentColour, moveBoard.returnSquare(xIterator,y)) = 0 then
-                                    begin
-                                        list.addNode(iterator, y, evaluatePiece(xIterator, y, moveBoard, side));
-                                        break;
-                                    end
-                            end
-                            else if moveBoard.returnSquare(xIterator,y) <> 'Empty' then
+                                list.addNode(iterator, y, evaluatePiece(xIterator, y, moveBoard, side));
                                 break;
+                            end
+                        else if pos(playerColour, moveBoard.returnSquare(xIterator,y) != 0 then
+                            break;
                     end;
+
                 for xIterator = x - 1 downto 0 do
                     begin
                         if moveBoard.returnSquare(xIterator,y) = 'Empty' then
                             list.addNode(xIterator, y, evaluatePiece(xIterator, y, moveBoard, side))
-                        else if x >= 0 then
+                        else if pos(opponentColour, moveBoard.returnSquare(xIterator,y)) != 0 then
                             begin
-                                if pos(opponentColour, moveBoard.returnSquare(xIterator,y)) = 0 then
-                                    begin
-                                        
-                                        list.addNode(xIterator, y, evaluatePiece(xIterator, y, moveBoard, side));
-                                        break;
-                                    end
+                                list.addNode(xIterator, y, evaluatePiece(xIterator, y, moveBoard, side));
+                                break;
                             end
-                            else if moveBoard.returnSquare(xIterator,y) <> 'Empty' then
+                        else if pos(playerColour, moveBoard.returnSquare(xIterator,y) != 0 then
                                 break;
                     end;
+
                 for yIterator = y + 1 to 7 do
                     begin
                         if moveBoard.returnSquare(x,yIterator) = 'Empty' then
                             list.addNode(x, yIterator, evaluatePiece(x, yIterator, moveBoard, side))
-                        else if x >= 0 then
+                        else if pos(opponentColour, moveBoard.returnSquare(x,yIterator)) != 0 then
                             begin
-                                if pos(opponentColour, moveBoard.returnSquare(x,yIterator)) = 0 then
-                                    begin
-                                        list.addNode(x,yIterator, evaluatePiece(x,yIterator, moveBoard, side));
-                                        break;
-                                    end
-                            end
-                            else if moveBoard.returnSquare(x,yIterator) <> 'Empty' then
+                                list.addNode(x,yIterator, evaluatePiece(x,yIterator, moveBoard, side));
                                 break;
+                            end
+                        else if pos(playerColour, moveBoard.returnSquare(x,yIterator) != 0 then
+                            break;
                     end;
+
                 for yIterator = y - 1 downto 0 do
                     begin
                         if moveBoard.returnSquare(x,yIterator) = 'Empty' then
                             list.addNode(x, yIterator, evaluatePiece(x, yIterator, moveBoard, side))
-                        else if x >= 0 then
+                        else if pos(opponentColour, moveBoard.returnSquare(x,yIterator)) != 0 then
                             begin
-                                if pos('White', moveBoard.returnSquare(x,yIterator)) = 0 then
-                                    begin
-                                        list.addNode(x,yIterator, evaluatePiece(x,yIterator, moveBoard, side));
-                                        break;
-                                    end
+                                list.addNode(x,yIterator, evaluatePiece(x,yIterator, moveBoard, side));
+                                break;
                             end
-                            else if moveBoard.returnSquare(x,yIterator) <> 'Empty' then
+                            else if pos(playerColour, moveBoard.returnSquare(x,yIterator) != 0 then
                                 break;
                     end;
                 possibleSquares2DArray := @list;
@@ -434,11 +426,12 @@ begin
                                     begin
                                         list.addNode(x+2,y+1, evaluatePiece(x+2,y+1,moveBoard,side))
                                     end
-                                    else if pos(opponentColour, moveBoard.returnSquare(x+2,y+1)) = 0 then
+                                    else if pos(opponentColour, moveBoard.returnSquare(x+2,y+1)) != 0 then
                                         begin
-                                            list.addNode(x+2,y+1, evaluatePiece(x+2,y+1,moveBoard,side));
+                                            list.addNode(x+2,y+1, evaluatePiece(x+2,y+1,moveBoard,side))
                                         end;
                             end;
+                    end;
                  if x < 6 then
                     begin
                         if y > 0 then
@@ -447,7 +440,7 @@ begin
                                     begin
                                         list.addNode(x+2,y-1, evaluatePiece(x+2,y-1,moveBoard,side))
                                     end
-                                    else if pos(opponentColour, moveBoard.returnSquare(x+2,y-1)) = 0 then
+                                    else if pos(opponentColour, moveBoard.returnSquare(x+2,y-1)) != 0 then
                                         begin
                                             list.addNode(x+2,y-1, evaluatePiece(x+2,y-1,moveBoard,side));
                                         end;
@@ -462,7 +455,7 @@ begin
                                     begin
                                         list.addNode(x+1,y+2, evaluatePiece(x+1,y+2,moveBoard,side))
                                     end
-                                    else if pos(opponentColour, moveBoard.returnSquare(x+1,y+2)) = 0 then
+                                    else if pos(opponentColour, moveBoard.returnSquare(x+1,y+2)) != 0 then
                                         begin
                                             list.addNode(x+1,y+2, evaluatePiece(x+1,y+2,moveBoard,side));
                                         end;
@@ -476,7 +469,7 @@ begin
                                     begin
                                         list.addNode(x+1,y-2, evaluatePiece(x+1,y-2,moveBoard,side))
                                     end
-                                    else if pos(opponentColour, moveBoard.returnSquare(x+1,y-2)) = 0 then
+                                    else if pos(opponentColour, moveBoard.returnSquare(x+1,y-2)) != 0 then
                                         begin
                                             list.addNode(x+1,y-2, evaluatePiece(x+1,y-2,moveBoard,side));
                                         end;
@@ -491,7 +484,7 @@ begin
                                     begin
                                         list.addNode(x-2,y+1, evaluatePiece(x-2,y+1,moveBoard,side))
                                     end
-                                    else if pos(opponentColour, moveBoard.returnSquare(x-2,y+1)) = 0 then
+                                    else if pos(opponentColour, moveBoard.returnSquare(x-2,y+1)) != 0 then
                                         begin
                                             list.addNode(x-2,y+1, evaluatePiece(x-2,y+1,moveBoard,side));
                                         end;
@@ -504,7 +497,7 @@ begin
                                     begin
                                         list.addNode(x-2,y-1, evaluatePiece(x-2,y-1,moveBoard,side))
                                     end
-                                    else if pos(opponentColour, moveBoard.returnSquare(x-2,y-1)) = 0 then
+                                    else if pos(opponentColour, moveBoard.returnSquare(x-2,y-1)) != 0 then
                                         begin
                                             list.addNode(x-2,y-1, evaluatePiece(x-2,y-1,moveBoard,side));
                                         end;
@@ -519,7 +512,7 @@ begin
                                     begin
                                         list.addNode(x-1,y+2, evaluatePiece(x-1,y+2,moveBoard,side))
                                     end
-                                    else if pos(opponentColour, moveBoard.returnSquare(x-1,y+2)) = 0 then
+                                    else if pos(opponentColour, moveBoard.returnSquare(x-1,y+2)) != 0 then
                                         begin
                                             list.addNode(x-1,y+2, evaluatePiece(x-1,y+2,moveBoard,side));
                                         end;
@@ -532,7 +525,7 @@ begin
                                     begin
                                         list.addNode(x-1,y-2, evaluatePiece(x-1,y-2,moveBoard,side))
                                     end
-                                    else if pos(opponentColour, moveBoard.returnSquare(x-1,y-2)) = 0 then
+                                    else if pos(opponentColour, moveBoard.returnSquare(x-1,y-2)) != 0 then
                                         begin
                                             list.addNode(x-1,y-2, evaluatePiece(x-1,y-2,moveBoard,side));
                                         end;
@@ -550,25 +543,23 @@ begin
                             begin
                                 break;
                             end;
-                        inc(yIterator);
                         if moveBoard.returnSquare(xIterator,yIterator) = 'Empty' then
                             begin
-                                list.addNode(xIterator,yIterator,evaluatePiece(xIterator,yIterator,moveBoard,1))
+                                list.addNode(xIterator,yIterator,evaluatePiece(xIterator,yIterator,moveBoard,side))
                             end
-                            else if xIterator < 8 then
+                            else if pos(opponentColour, moveBoard.returnSquare(xIterator,yIterator)) != 0 then
                                 begin
-                                    if yIterator < 8 then
-                                        begin
-                                            if pos(opponentColour, moveBoard.returnSquare(xIterator,yIterator)) = 0 then
-                                                begin
-                                                    list.addNode(xIterator,yIterator, evaluatePiece(xIterator,yIterator,moveBoard,1));
-                                                    break;
-                                                end;
-                                        end        
-                                end
-                                else
+                                    list.addNode(xIterator,yIterator, evaluatePiece(xIterator,yIterator,moveBoard,side));
                                     break;
-                end;
+                                end;
+                                    end        
+                            else if pos(playerColour, moveBoard.returnSquare(xIterator,yIterator)) != 0 then
+                                begin
+                                    break;
+                                end;
+                        inc(yIterator);
+                    end;
+
                 yIterator := y-1;
                 for xIterator := x+1 to 7 do
                     begin
@@ -576,26 +567,22 @@ begin
                             begin
                                 break;
                             end;
-                        dec(yIterator);
                         if moveBoard.returnSquare(xIterator,yIterator) = 'Empty' then
                             begin
-                                list.addNode(xIterator,yIterator,evaluatePiece(xIterator,yIterator,moveBoard,1))
+                                list.addNode(xIterator,yIterator,evaluatePiece(xIterator,yIterator,moveBoard,side))
                             end
-                            else if xIterator < 8 then
+                            else if pos(opponentColour, moveBoard.returnSquare(xIterator,yIterator)) != 0 then
                                 begin
-                                    if yIterator < 8 then
-                                        begin
-                                            if pos(opponentColour, moveBoard.returnSquare(xIterator,yIterator)) = 0 then
-                                                begin
-                                                    list.addNode(xIterator,yIterator, evaluatePiece(xIterator,yIterator,moveBoard,1));
-                                                    break;
-                                                end;
-                                        end        
+                                    list.addNode(xIterator,yIterator, evaluatePiece(xIterator,yIterator,moveBoard,side));
+                                    break
                                 end
-                                else
+                            else if pos(playerColour, moveBoard.returnSquare(xIterator,yIterator)) != 0 then
                                     break;
+                        dec(yIterator);
                      end;
-                for xIterator := x+1 to 7 do
+
+                    yIterator := y+1;
+                for xIterator := x-1 downto 0 do
                     begin
                         if yIterator > 7 then
                             begin
@@ -603,23 +590,38 @@ begin
                             end;
                         if moveBoard.returnSquare(xIterator,yIterator) = 'Empty' then
                             begin
-                                list.addNode(xIterator,yIterator,evaluatePiece(xIterator,yIterator,moveBoard,1))
+                                list.addNode(xIterator,yIterator,evaluatePiece(xIterator,yIterator,moveBoard,side))
                             end
-                            else if xIterator < 8 then
+                            else if pos(opponentColour, moveBoard.returnSquare(xIterator,yIterator)) != 0 then
                                 begin
-                                    if yIterator < 8 then
-                                        begin
-                                            if pos(opponentColour, moveBoard.returnSquare(xIterator,yIterator)) = 0 then
-                                                begin
-                                                    list.addNode(xIterator,yIterator, evaluatePiece(xIterator,yIterator,moveBoard,1));
-                                                    break;
-                                                end;
-                                        end        
+                                    list.addNode(xIterator,yIterator, evaluatePiece(xIterator,yIterator,moveBoard,side));
+                                    break
                                 end
-                                else
-                                    break;
+                            else if pos(playerColour, moveBoard.returnSquare(xIterator,yIterator)) != 0 then
+                                break;
+                        inc(yIterator);
                      end;
 
+                yIterator := y-1;
+                for xIterator := x-1 downto 0 do
+                    begin
+                        if yIterator < 0 then
+                            begin
+                                break;
+                            end;
+                        if moveBoard.returnSquare(xIterator,yIterator) = 'Empty' then
+                            begin
+                                list.addNode(xIterator,yIterator,evaluatePiece(xIterator,yIterator,moveBoard,side))
+                            end
+                            else if pos(opponentColour, moveBoard.returnSquare(xIterator,yIterator)) != 0 then
+                                begin
+                                    list.addNode(xIterator,yIterator, evaluatePiece(xIterator,yIterator,moveBoard,side));
+                                    break
+                                end
+                            else if pos(playerColour, moveBoard.returnSquare(xIterator,yIterator)) != 0 then
+                                    break;
+                end;
+ 
 
 
                     
