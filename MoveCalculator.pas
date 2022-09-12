@@ -875,7 +875,7 @@ begin
                                 if moveBoard.returnSquare(0,1) = 'Empty' then
                                     begin
                                         if moveBoard.returnSquare(0,2) = 'Empty' then
-                                            list.addNode(x,y,1);
+                                            list.addNode(x,y-2,1);
                                     end;
                             end;
 
@@ -918,13 +918,180 @@ begin
                                         begin
                                             if moveBoard.returnSquare(x+2,y) = 'Empty' then
                                                 begin
-                                                    list.addNode(x+1,y, evaluatePiece(x+1,y,moveBoard,WHITE));
+                                                    list.addNode(x+2,y, evaluatePiece(x+2,y,moveBoard,WHITE));
                                                 end;
                                         end;
                                 end;
                         end;
                 possibleSquaresArray := &list;
                 end;
+
+        'Black King':
+            begin
+                if side = BLACK then
+                    begin
+                        if x < 7 then
+                            begin
+                                if moveBoard.returnSquare(x+1,y) = 'Empty' then
+                                    begin
+                                        list.addNode(x+1,y, evaluatePiece(x+1,y, moveBoard, BLACK))
+                                    end
+                                else if pos('White', moveBoard.returnSquare(x+1,y) != 0 then
+                                    begin
+                                        list.addNode(x+1,y, evaluatePiece(x+1,y, moveBoard, BLACK));
+                                    end;
+                            end;
+                        if x > 0 then
+                            begin
+                                if moveBoard.returnSquare(x-1,y) = 'Empty' then
+                                    begin
+                                        list.addNode(x-1,y, evaluatePiece(x-1,y, moveBoard, BLACK))
+                                    end
+                                else if pos('White', moveBoard.returnSquare(x-1,y) != 0 then
+                                    begin
+                                        list.addNode(x-1,y, evaluatePiece(x-1,y, moveBoard, BLACK));
+                                    end;
+                            end;
+
+                        if y < 7 then
+                            begin
+                                if moveBoard.returnSquare(x,y+1) = 'Empty' then
+                                    begin
+                                        list.addNode(x,y+1, evaluatePiece(x,y+1, moveBoard, BLACK))
+                                    end
+                                else if pos('White', moveBoard.returnSquare(x,y+1) != 0 then
+                                    begin
+                                        list.addNode(x,y+1, evaluatePiece(x,y+1, moveBoard, BLACK));
+                                    end;
+                            end;
+
+                        if y > 0 then
+                            begin
+                                if moveBoard.returnSquare(x,y-1) = 'Empty' then
+                                    begin
+                                        list.addNode(x,y-1, evaluatePiece(x,y-1, moveBoard, BLACK))
+                                    end
+                                else if pos('White', moveBoard.returnSquare(x,y-1)) != 0 then
+                                    begin
+                                        list.addNode(x,y-1, evaluatePiece(x,y-1, moveBoard, BLACK));
+                                    end;
+                            end;
+                        if x < 7 then
+                            begin
+                                if y < 7 then
+                                    begin
+                                        if moveBoard.returnSquare(x+1,y+1) = 'Empty' then
+                                            begin
+                                                list.addNode(x+1,y+1, evaluatePiece(x+1,y+1, moveBoard, BLACK))
+                                            end
+                                        else if pos('White', moveBoard.returnSquare(x+1,y+1)) != 0 then
+                                            begin
+                                                list.addNode(x+1,y+1, evaluatePiece(x+1,y+1, moveBoard, BLACK))
+                                            end;
+                                    end;
+                            end;
+
+                        if x < 7 then
+                            begin
+                                if y > 0 then
+                                    begin
+                                        if moveBoard.returnSquare(x+1,y-1) = 'Empty' then
+                                            begin
+                                                list.addNode(x+1,y-1, evaluatePiece(x+1,y-1, moveBoard, BLACK))
+                                            end
+                                        else if pos('White', moveBoard.returnSquare(x+1,y-1)) != 0 then
+                                            begin
+                                                list.addNode(x+1,y-1, evaluatePiece(x+1,y-1,moveBoard, BLACK))
+                                            end;
+                                    end;
+                            end;
+
+                        if x > 0 then
+                            begin
+                                if y < 7 then
+                                    begin
+                                        if moveBoard.returnSquare(x-1,y+1) = 'Empty' then
+                                            begin
+                                                list.addNode(x-1,y+1, evaluatePiece(x-1,y+1, moveBoard, BLACK))
+                                            end
+                                        else if pos('White', moveBoard.returnSquare(x-1,y+1)) != 0 then
+                                            begin
+                                                list.addNode(x-1,y+1, evaluatePiece(x-1,y+1,moveBoard, BLACK))
+                                            end;
+                                    end;
+                            end;
+
+                        if x > 0 then
+                            begin
+                                if > 0 then
+                                    begin
+                                        if moveBoard.returnSquare(x-1,y-1) = 'Empty' then
+                                            begin
+                                                list.addNode(x-1,y-1, evaluatePiece(x-1,y-1, moveBoard, BLACK))
+                                            end
+                                        else if pos('White', moveBoard.returnSquare(x-1,y-1)) != 0 then
+                                            begin
+                                                list.addNode(x-1,y-1, evaluatePiece(x-1,y-1,moveBoard, BLACK))
+                                            end;
+                                    end;
+                            end;
+
+                        if castleCheck(BLACK) = true then
+                            begin
+                                if moveBoard.returnSquare(7,1) = 'Empty' then
+                                    begin
+                                        if moveBoard.returnSquare(7,2) = 'Empty' then
+                                            list.addNode(x,y-2,1);
+                                    end;
+                            end;
+
+                    
+
+
+                    end;
+                     
+
+            possibleSquares2DArray := &list;
+                end;
+
+            'Black Pawn':
+                begin
+                    if side = BLACK then
+                        begin
+                            if x > 0 then
+                                begin
+                                    if moveBoard.returnSquare(x-1,y) = 'Empty' then
+                                        begin
+                                            list.addNode(x-1,y, evaluatePiece(x+1,y,moveBoard,BLACK));
+                                        end;
+                                    if y < 7 then
+                                        begin
+                                            if pos('White', moveBaord.returnSquare(x+1,y+1)) != 0 then
+                                                begin
+                                                    list.addNode(x+1,y+1,evaluatePiece(x+1,y+1,moveBoard,BLACK));
+                                                end;
+                                        end;
+                                    if y > 0 then
+                                        begin
+                                            if pos('White', moveBoard.returnSquare(x+1,y-1)) != 0 then
+                                                begin
+                                                    list.addNode(x+1,y-1,evaluatePiece(x+1,y-1,moveBoard,BLACK));
+                                                end;
+                                        end;
+                            if x = 6 then
+                                begin
+                                    if moveBoard.returnSquare(x-1,y) = 'Empty' then
+                                        begin
+                                            if moveBoard.returnSquare(x-2,y) = 'Empty' then
+                                                begin
+                                                    list.addNode(x-2,y, evaluatePiece(x-2,y,moveBoard,BLACK));
+                                                end;
+                                        end;
+                                end;
+                        end;
+                possibleSquaresArray := &list;
+                end;
+
 
 end;
 
