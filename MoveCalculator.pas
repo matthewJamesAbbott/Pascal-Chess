@@ -17,6 +17,8 @@ type
         x, y, squareRank: integer;
         next: node;
     end;
+
+    
     TMoveCalculator = Object
 
     private
@@ -336,7 +338,7 @@ begin
         
 end;
 
-procedure TMoveCalculator.possibleSquares2DArray(x, y, side: integer, moveBoard: TBoard);
+function TMoveCalculator.possibleSquares2DArray(x, y, side: integer, moveBoard: TBoard): integerArray;
 
 var
     piece, switchedPiece, opponentColour, playerColour: string;
@@ -346,13 +348,15 @@ var
 begin
     piece := moveBoard.returnSquare(x,y);
     if pos('Rook', piece) != 0 then
-        switchedPiece := 'Rook';
-    if pos('Knight', piece) != 0 then
-        switchedPiece := 'Knight';
-    if pos('Bishop', piece) != 0 then 
-        switchedPiece := 'Bishop';
-    if pos('Queen', piece) != 0 then
-        switchedPiece := 'Queen';
+        switchedPiece := 'Rook'
+    else if pos('Knight', piece) != 0 then
+        switchedPiece := 'Knight'
+    else if pos('Bishop', piece) != 0 then 
+        switchedPiece := 'Bishop'
+    else if pos('Queen', piece) != 0 then
+        switchedPiece := 'Queen'
+    else
+        switchedPiece := piece;
 
     if side = BLACK then
         opponentColour := 'White'
@@ -363,7 +367,7 @@ begin
 
     list := THeapLinkedList.create;
 
-    case(piece) of
+    case(switchedPiece) of
         'Rook':
             begin
                 for xIterator := x + 1 to 7 do
@@ -535,7 +539,7 @@ begin
                                         end;
                             end;
                     end;
-            possibleSquares2DArray := &list;
+            possibleSquares2DArray := @list;
             end;
 
         'Bishop':
@@ -756,6 +760,7 @@ begin
                             break;
                     dec(yIterator);
                     end;
+                possibleSquares2DArray := @list;
             end;
 
 
@@ -885,7 +890,7 @@ begin
                     end;
                      
 
-            possibleSquares2DArray := &list;
+            possibleSquares2DArray := @list;
                 end;
 
             'White Pawn':
@@ -923,7 +928,7 @@ begin
                                         end;
                                 end;
                         end;
-                possibleSquaresArray := &list;
+                possibleSquaresArray := @list;
                 end;
 
         'Black King':
@@ -1051,7 +1056,7 @@ begin
                     end;
                      
 
-            possibleSquares2DArray := &list;
+            possibleSquares2DArray := @list;
                 end;
 
             'Black Pawn':
@@ -1089,13 +1094,122 @@ begin
                                         end;
                                 end;
                         end;
-                possibleSquaresArray := &list;
+                possibleSquaresArray := @list;
                 end;
 
+                'Empty':
+                    begin
+                        possibleSquaresArray := @list;
+                    end;
 
 end;
 
+function TMoveCalculator.checkMateTest(gameBoard: TBoard, side: integer): boolean;
+
+var
+    testBoard: TBoard;
+    temp: THeapLinkedList;
+    kingX, kingy, iterator, xIterator, yIterator, xIterator2, yIterator2,  tempA, tempB: integer;
+    moveVector, returnedVector: array[0..567] of int;
 
 
+begin
 
+    if side = BLACK then
+        begin
+            for xIterator = 0 to 7 do
+                begin
+                    for yIterator = 0 to 7 do
+                        begin
+                            if pos('Black', gameBoard.returnSquare(xIterator,yIterator) = 0 then
+                                begin
+                                    temp := possibleSquares2DArray(xIterator,yIterator,gameBoard,side);
+                                    returnedVector := temp.returnVector;
+                                    for iterator := 0 to length(returnVector) -1 do
+                                        begin
+                                            testBoard := gameBoard;
+                                            testA := ord(returnedVector[iterator]);
+                                            testB := ord(returnedVector[iterator+1]);
+                                            piece := testBoard.returnSquare(xIterator,yIterator);
+                                            testBoard.setSquare(xIterator,yIterator, 'Empty');
+                                            testBoard.setSquare(tempA,tempB, piece);
+                                            for xIterator2 = 0 to 7 do
+                                                begin
+                                                    for yIterator2 = 0 to 7 do
+                                                        begin
+                                                            if testBoard.returnSquare(xIterator2,yIterator2) = 'Black King' then
+                                                                begin
+                                                                    kingX := xIterator2;
+                                                                    kingY := yIterator2;
+                                                                end;
+                                                        end;
+                                                end;
+                                        
+                                            if checkCalculator(kingX, kingY, testBoard, side) = false then
+                                                begin
+                                                    checkMateTest := false;
+                                                end;
+                                            inc(iterator);
+                                        end;
+                                end;
+                        end;
+            end
+            else
+                begin
+                    for xIterator := 0 to 7 do
+                        begin
+                            for yIterator := 0 to 7 do
+                                begin
+                                    if pos('White', gameBoard.returnSquare(xIterator,yIterator)) = 0 then
+                                        begin
+                                            temp := possibleSquares2DArray(xIterator,yIterator,gameBoard,side);
+                                            returnedVector := temp.returnVector;
+                                            for iterator = 0 to length(returnedVector) -1 do
+                                                begin
+                                                    tempA := ord(returnedVector[iterator]);
+                                                    tempB := ord(returnedVector[iterator+1]);
+                                                    piece = testBoard.returnSquare(xIterator,yIterator);
+                                                    testBoard.setSquare(xIterator,yIterator,'Empty');
+                                                    testBoard.setSquare(tempA,tempB,piece);
+                                                    for xIterator2 = 0 to 7 do
+                                                        begin
+                                                            for yIterator2 = 0 to 7 do
+                                                                begin
+                                                                    if testBoard.returnSquare(xIterator2,yIterator2) = 'White King' then
+                                                                        begin
+                                                                            kingX := xIterator2;
+                                                                            kingy := yIterator2;
+                                                                        end;
+                                                                end;
+                                                        end;
+                                                    if checkCalculator(kingX,kingY,testBoard,side) = false then
+                                                        begin
+                                                            checkMateTest := false;
+                                                        end;
+                                                end;
+                                         end;
+                                end;
+                        end;
+                end;
+        end;
+    checkMateTest := true;
+end;
+
+
+function TMoveCalculator.checkCalculator(x,y,side: integer; TBoard moveBoard): boolean;
+
+var
+    returnedVector: string;
+    temp: THeapLinkedList;
+    moveVector: array[0 .. 567] of integer;
+    opponentSide,xIterator,yIterator: integer;
+
+begin
+    opponentSide := BLACK;
+    if side = BLACK then
+        begin
+            opponentSide := WHITE;
+            for xIterator := 0
+
+end;
 end.
