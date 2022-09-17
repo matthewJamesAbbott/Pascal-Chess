@@ -1207,7 +1207,7 @@ procedure addNode( inputX, inputY, inputSquareRank: integer );
 	       returnedVector: string;
 	       temp: THeapLinkedList;
 	       moveVector: array[0 .. 567] of integer;
-	       opponentSide,xIterator,yIterator,iterator,puck: integer;
+	       opponentSide,xIterator,yIterator,iterator,pucki,tempA,tempB: integer;
 
 	    begin
 	       opponentSide := BLACK;
