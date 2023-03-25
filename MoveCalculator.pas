@@ -8,10 +8,10 @@ unit MoveCalculator;
 interface
 
 uses
-Board,HeapLinkedList,Sysutils;
+Board,BoardInterface,HeapLinkedList,Sysutils;
 type
 
-integerArray = array of integer;
+   integerArray = array of integer;
    node = ^NodeRec;
    NodeRec = record
 		x, y, squareRank: integer;
@@ -21,20 +21,20 @@ integerArray = array of integer;
 
 TMoveCalculator = Object
 
-private
-procedure addNode( inputX, inputY, inputSquareRank: integer );
-   function returnVector(): string;
+   private
+      procedure addNode( inputX, inputY, inputSquareRank: integer );
+      function returnVector(): string;
       function returnWeightedVector(): string;
 
 
       public
-      constructor Create();{
+      constructor Create();
 	function castleCheck(side: integer): boolean;
 	function enPassantCheck(side: integer): integer;
-	function possibleSquares2DArray(x, y, side: integer; moveBoard: TBoard): integerArray;
-	function checkCalculator(x, y, side: integer; moveBoard: TBoard);
-	function checkMateTest(x, y, side: integer; moveBoard: TBoard);}
-	 function evaluatePiece(inputX, inputY, side: integer; moveBoard: TBoard): integer;
+	function possibleSquares2DArray(x, y: integer;moveBoard: IBoard; side: integer): THeapLinkedList;
+	function checkCalculator(x, y: integer; moveBoard: IBoard;side: integer): Boolean;
+	function checkMateTest(gameBoard: IBoard; side: integer): Boolean;
+	 function evaluatePiece(inputX, inputY: integer; moveBoard: IBoard; side: integer): integer;
 
 	 end;
 
@@ -54,7 +54,6 @@ procedure addNode( inputX, inputY, inputSquareRank: integer );
 	 head, tail: node;
 	 gameFile: TextFile;
 	 rLine: string;
-	 listPointerVar: listPointer;
 
       implementation
 
@@ -130,7 +129,7 @@ procedure addNode( inputX, inputY, inputSquareRank: integer );
    evaluate square on moveBoard for piece rank
    }
 
-      function TMoveCalculator.evaluatePiece(inputX, inputY, side: integer; moveBoard: TBoard): integer;
+      function TMoveCalculator.evaluatePiece(inputX, inputY: integer; moveBoard: IBoard; side: integer): integer;
       begin
 	 assignfile(gameFile, 'Chess.txt');
 	 rewrite(gameFile);
@@ -233,7 +232,8 @@ procedure addNode( inputX, inputY, inputSquareRank: integer );
 	 rLine: string;
 
       begin
-	 rewrite(gameFile, 'Chess.txt');
+	 Assign(gameFile, 'Chess.txt');
+	 rewrite(gameFile);
 	 while 1 <> 0 do
 	 begin
 	    readln(gameFile, rLine);
@@ -276,11 +276,12 @@ procedure addNode( inputX, inputY, inputSquareRank: integer );
       function TMoveCalculator.enpassantCheck(side: integer): integer;
 
       var
-	 rLine, tempString: string;
+	 rLine: string;
 	 turn,x,y,xa,ya: integer;
 
       begin
-	 rewrite(gameFile, 'Chess.txt');
+	 Assign(gameFile, 'Chess.txt');
+	 rewrite(gameFile);
 	 while 1 <> 0 do
 	 begin
 	    readln(gameFile, rLine);
@@ -288,16 +289,17 @@ procedure addNode( inputX, inputY, inputSquareRank: integer );
 	    begin
 	       turn := strtoint(copy(rLine,2,2));
 	    end;
-	    if rLine = nil then
+	    if rLine = '' then
 	       break;
 	 end;
 	 closefile(gameFile);
-	 rewrite(gameFile, 'Chess.txt');
+	 Assign(gameFile, 'Chess.txt');
+	 rewrite(gameFile);
 	 while 1 <> 0 do
 	 begin
 	    readln(gameFile, rLine);
-	    tempString := concat('[',inttostr(turn)); 
-	    if pos(tempString) = 0 then
+//	    tempString := concat('[',inttostr(turn)); 
+	    if pos({tempString} '[' + IntToStr(turn), rLine) = 0 then
 	    begin
 	       readln(gameFile, rLine);
 	       break;
@@ -305,10 +307,10 @@ procedure addNode( inputX, inputY, inputSquareRank: integer );
 	 end;
 	 if rLine <> '' then
 	 begin
-	    x := copy(rLine,2,1);
-	    y := copy(rLine,4,1);
-	    xa := copy(rLine,6,1);
-	    ya := copy(rLine,8,1);
+	    x := StrToInt(copy(rLine,2,1));
+	    y := StrToInt(copy(rLine,4,1));
+	    xa := StrToInt(copy(rLine,6,1));
+	    ya := StrToInt(copy(rLine,8,1));
 	    if side = BLACK then
 	    begin
 	       if x = 1 then
@@ -336,11 +338,11 @@ procedure addNode( inputX, inputY, inputSquareRank: integer );
 	       end;
 	    end;
 	 end;
-	 enpassant := 10;
+	 enpassantCheck := 10;
 
       end;
 
-      function TMoveCalculator.possibleSquares2DArray(x, y, side: integer, moveBoard: TBoard): integerArray;
+      function TMoveCalculator.possibleSquares2DArray(x, y: integer; moveBoard: IBoard; side: integer): THeapLinkedList;
 
       var
 	 piece, switchedPiece, opponentColour, playerColour: string;
@@ -349,24 +351,27 @@ procedure addNode( inputX, inputY, inputSquareRank: integer );
 
       begin
 	 piece := moveBoard.returnSquare(x,y);
-	 if pos('Rook', piece) != 0 then
+	 if pos('Rook', piece) <> 0 then
 	    switchedPiece := 'Rook'
-	 else if pos('Knight', piece) != 0 then
+	 else if pos('Knight', piece) <> 0 then
 	    switchedPiece := 'Knight'
-	 else if pos('Bishop', piece) != 0 then 
+	 else if pos('Bishop', piece) <> 0 then 
 	    switchedPiece := 'Bishop'
-	 else if pos('Queen', piece) != 0 then
+	 else if pos('Queen', piece) <> 0 then
 	    switchedPiece := 'Queen'
 	 else
 	    switchedPiece := piece;
 
 	 if side = BLACK then
-	    opponentColour := 'White'
-	    playerColour := 'Black';
-      else
-	 playerColour := 'White';
-	 opponentColour := 'Black';
-
+         begin
+	    opponentColour := 'White';
+	    playerColour := 'Black'
+	 end
+         else
+         begin
+	    playerColour := 'White';
+	    opponentColour := 'Black';
+         end;
 	 list := THeapLinkedList.create;
 
 	 case(switchedPiece) of
@@ -375,13 +380,13 @@ procedure addNode( inputX, inputY, inputSquareRank: integer );
 	    for xIterator := x + 1 to 7 do
 	    begin
 	       if moveBoard.returnSquare(xIterator,y) = 'Empty' then
-		  list.addNode(xIterator, y, evaluatePiece(iterator, y, moveBoard, side))
-	       else if pos(opponentColour, moveBoard.returnSquare(xIterator,y)) != 0 then
+		  list.addNode(xIterator, y, evaluatePiece(xIterator, y, moveBoard, side))
+	       else if pos(opponentColour, moveBoard.returnSquare(xIterator,y)) <> 0 then
 	       begin
-		  list.addNode(iterator, y, evaluatePiece(xIterator, y, moveBoard, side));
+		  list.addNode(xIterator, y, evaluatePiece(xIterator, y, moveBoard, side));
 		  break
 	       end
-	    else if pos(playerColour, moveBoard.returnSquare(xIterator,y)) != 0 then
+	    else if pos(playerColour, moveBoard.returnSquare(xIterator,y)) <> 0 then
 	    begin
 	       break;
 	    end;
@@ -390,12 +395,12 @@ procedure addNode( inputX, inputY, inputSquareRank: integer );
 	    begin
 	       if moveBoard.returnSquare(xIterator,y) = 'Empty' then
 		  list.addNode(xIterator, y, evaluatePiece(xIterator, y, moveBoard, side))
-	       else if pos(opponentColour, moveBoard.returnSquare(xIterator,y)) != 0 then
+	       else if pos(opponentColour, moveBoard.returnSquare(xIterator,y)) <> 0 then
 	       begin
 		  list.addNode(xIterator, y, evaluatePiece(xIterator, y, moveBoard, side));
 		  break
 	       end
-	    else if pos(playerColour, moveBoard.returnSquare(xIterator,y)) != 0 then
+	    else if pos(playerColour, moveBoard.returnSquare(xIterator,y)) <> 0 then
 	       break;
 	    end;
 
@@ -403,12 +408,12 @@ procedure addNode( inputX, inputY, inputSquareRank: integer );
 	    begin
 	       if moveBoard.returnSquare(x,yIterator) = 'Empty' then
 		  list.addNode(x, yIterator, evaluatePiece(x, yIterator, moveBoard, side))
-	       else if pos(opponentColour, moveBoard.returnSquare(x,yIterator)) != 0 then
+	       else if pos(opponentColour, moveBoard.returnSquare(x,yIterator)) <> 0 then
 	       begin
 		  list.addNode(x,yIterator, evaluatePiece(x,yIterator, moveBoard, side));
 		  break
 	       end
-	    else if pos(playerColour, moveBoard.returnSquare(x,yIterator)) != 0 then
+	    else if pos(playerColour, moveBoard.returnSquare(x,yIterator)) <> 0 then
 	       break;
 	    end;
 
@@ -416,15 +421,15 @@ procedure addNode( inputX, inputY, inputSquareRank: integer );
 	    begin
 	       if moveBoard.returnSquare(x,yIterator) = 'Empty' then
 		  list.addNode(x, yIterator, evaluatePiece(x, yIterator, moveBoard, side))
-	       else if pos(opponentColour, moveBoard.returnSquare(x,yIterator)) != 0 then
+	       else if pos(opponentColour, moveBoard.returnSquare(x,yIterator)) <> 0 then
 	       begin
 		  list.addNode(x,yIterator, evaluatePiece(x,yIterator, moveBoard, side));
 		  break
 	       end
-	    else if pos(playerColour, moveBoard.returnSquare(x,yIterator)) != 0 then
+	    else if pos(playerColour, moveBoard.returnSquare(x,yIterator)) <> 0 then
 	       break;
 	    end;
-	    possibleSquares2DArray := @list;
+	    possibleSquares2DArray := list;
 	 end;
 
 	   'Knight':
@@ -437,7 +442,7 @@ procedure addNode( inputX, inputY, inputSquareRank: integer );
 		  begin
 		     list.addNode(x+2,y+1, evaluatePiece(x+2,y+1,moveBoard,side))
 		  end
-	       else if pos(opponentColour, moveBoard.returnSquare(x+2,y+1)) != 0 then
+	       else if pos(opponentColour, moveBoard.returnSquare(x+2,y+1)) <> 0 then
 	       begin
 		  list.addNode(x+2,y+1, evaluatePiece(x+2,y+1,moveBoard,side))
 	       end;
@@ -451,7 +456,7 @@ procedure addNode( inputX, inputY, inputSquareRank: integer );
 		  begin
 		     list.addNode(x+2,y-1, evaluatePiece(x+2,y-1,moveBoard,side))
 		  end
-	       else if pos(opponentColour, moveBoard.returnSquare(x+2,y-1)) != 0 then
+	       else if pos(opponentColour, moveBoard.returnSquare(x+2,y-1)) <> 0 then
 	       begin
 		  list.addNode(x+2,y-1, evaluatePiece(x+2,y-1,moveBoard,side));
 	       end;
@@ -466,7 +471,7 @@ procedure addNode( inputX, inputY, inputSquareRank: integer );
 		  begin
 		     list.addNode(x+1,y+2, evaluatePiece(x+1,y+2,moveBoard,side))
 		  end
-	       else if pos(opponentColour, moveBoard.returnSquare(x+1,y+2)) != 0 then
+	       else if pos(opponentColour, moveBoard.returnSquare(x+1,y+2)) <> 0 then
 	       begin
 		  list.addNode(x+1,y+2, evaluatePiece(x+1,y+2,moveBoard,side));
 	       end;
@@ -480,7 +485,7 @@ procedure addNode( inputX, inputY, inputSquareRank: integer );
 		  begin
 		     list.addNode(x+1,y-2, evaluatePiece(x+1,y-2,moveBoard,side))
 		  end
-	       else if pos(opponentColour, moveBoard.returnSquare(x+1,y-2)) != 0 then
+	       else if pos(opponentColour, moveBoard.returnSquare(x+1,y-2)) <> 0 then
 	       begin
 		  list.addNode(x+1,y-2, evaluatePiece(x+1,y-2,moveBoard,side));
 	       end;
@@ -495,8 +500,7 @@ procedure addNode( inputX, inputY, inputSquareRank: integer );
 		  begin
 		     list.addNode(x-2,y+1, evaluatePiece(x-2,y+1,moveBoard,side))
 		  end
-	       else if pos(opponentColour, moveBoard.returnSquare(x-2,y+1)) != 0 then
-	       begin
+	       else if pos(opponentColour, moveBoard.returnSquare(x-2,y+1)) <> 0 then
 		  list.addNode(x-2,y+1, evaluatePiece(x-2,y+1,moveBoard,side));
 	       end;
 	       end;
@@ -508,7 +512,7 @@ procedure addNode( inputX, inputY, inputSquareRank: integer );
 		     begin
 			list.addNode(x-2,y-1, evaluatePiece(x-2,y-1,moveBoard,side))
 		     end
-		  else if pos(opponentColour, moveBoard.returnSquare(x-2,y-1)) != 0 then
+		  else if pos(opponentColour, moveBoard.returnSquare(x-2,y-1)) <> 0 then
 		  begin
 		     list.addNode(x-2,y-1, evaluatePiece(x-2,y-1,moveBoard,side));
 		  end;
@@ -523,7 +527,7 @@ procedure addNode( inputX, inputY, inputSquareRank: integer );
 		     begin
 			list.addNode(x-1,y+2, evaluatePiece(x-1,y+2,moveBoard,side))
 		     end
-		  else if pos(opponentColour, moveBoard.returnSquare(x-1,y+2)) != 0 then
+		  else if pos(opponentColour, moveBoard.returnSquare(x-1,y+2)) <> 0 then
 		  begin
 		     list.addNode(x-1,y+2, evaluatePiece(x-1,y+2,moveBoard,side));
 		  end;
@@ -536,14 +540,15 @@ procedure addNode( inputX, inputY, inputSquareRank: integer );
 			begin
 			   list.addNode(x-1,y-2, evaluatePiece(x-1,y-2,moveBoard,side))
 			end
-		     else if pos(opponentColour, moveBoard.returnSquare(x-1,y-2)) != 0 then
+		     else if pos(opponentColour, moveBoard.returnSquare(x-1,y-2)) <> 0 then
 		     begin
 			list.addNode(x-1,y-2, evaluatePiece(x-1,y-2,moveBoard,side));
 		     end;
 		     end;
 		  end;
-		  possibleSquares2DArray := @list;
+		  possibleSquares2DArray := list;
 	       end;
+	    end;
 
 	       'Bishop':
 	    begin
@@ -558,13 +563,13 @@ procedure addNode( inputX, inputY, inputSquareRank: integer );
 		  begin
 		     list.addNode(xIterator,yIterator,evaluatePiece(xIterator,yIterator,moveBoard,side))
 		  end
-	       else if pos(opponentColour, moveBoard.returnSquare(xIterator,yIterator)) != 0 then
+	       else if pos(opponentColour, moveBoard.returnSquare(xIterator,yIterator)) <> 0 then
 	       begin
 		  list.addNode(xIterator,yIterator, evaluatePiece(xIterator,yIterator,moveBoard,side));
-		  break;
-	       end;
+		  break
+	       end
 
-	       else if pos(playerColour, moveBoard.returnSquare(xIterator,yIterator)) != 0 then
+	       else if pos(playerColour, moveBoard.returnSquare(xIterator,yIterator)) <> 0 then
 	       begin
 		  break;
 	       end;
@@ -582,12 +587,12 @@ procedure addNode( inputX, inputY, inputSquareRank: integer );
 		  begin
 		     list.addNode(xIterator,yIterator,evaluatePiece(xIterator,yIterator,moveBoard,side))
 		  end
-	       else if pos(opponentColour, moveBoard.returnSquare(xIterator,yIterator)) != 0 then
+	       else if pos(opponentColour, moveBoard.returnSquare(xIterator,yIterator)) <> 0 then
 	       begin
 		  list.addNode(xIterator,yIterator, evaluatePiece(xIterator,yIterator,moveBoard,side));
 		  break
 	       end
-	       else if pos(playerColour, moveBoard.returnSquare(xIterator,yIterator)) != 0 then
+	       else if pos(playerColour, moveBoard.returnSquare(xIterator,yIterator)) <> 0 then
 		  break;
 		  dec(yIterator);
 	       end;
@@ -603,12 +608,12 @@ procedure addNode( inputX, inputY, inputSquareRank: integer );
 		  begin
 		     list.addNode(xIterator,yIterator,evaluatePiece(xIterator,yIterator,moveBoard,side))
 		  end
-	       else if pos(opponentColour, moveBoard.returnSquare(xIterator,yIterator)) != 0 then
+	       else if pos(opponentColour, moveBoard.returnSquare(xIterator,yIterator)) <> 0 then
 	       begin
 		  list.addNode(xIterator,yIterator, evaluatePiece(xIterator,yIterator,moveBoard,side));
 		  break
 	       end
-	       else if pos(playerColour, moveBoard.returnSquare(xIterator,yIterator)) != 0 then
+	       else if pos(playerColour, moveBoard.returnSquare(xIterator,yIterator)) <> 0 then
 		  break;
 		  inc(yIterator);
 	       end;
@@ -624,16 +629,16 @@ procedure addNode( inputX, inputY, inputSquareRank: integer );
 		  begin
 		     list.addNode(xIterator,yIterator,evaluatePiece(xIterator,yIterator,moveBoard,side))
 		  end
-	       else if pos(opponentColour, moveBoard.returnSquare(xIterator,yIterator)) != 0 then
+	       else if pos(opponentColour, moveBoard.returnSquare(xIterator,yIterator)) <> 0 then
 	       begin
 		  list.addNode(xIterator,yIterator, evaluatePiece(xIterator,yIterator,moveBoard,side));
 		  break
 	       end
-	       else if pos(playerColour, moveBoard.returnSquare(xIterator,yIterator)) != 0 then
+	       else if pos(playerColour, moveBoard.returnSquare(xIterator,yIterator)) <> 0 then
 		  break;
 		  dec(yIterator);
 	       end;
-	       possibleSquares2DArray := @list;
+	       possibleSquares2DArray := list;
 	    end;
 	       
 	       'Queen':
@@ -645,12 +650,12 @@ procedure addNode( inputX, inputY, inputSquareRank: integer );
 		     list.addNode(xIterator,y,evaluatePiece(xIterator,yIterator,moveBoard,side))
 		  end
 
-	       else if pos(opponentColour, moveBoard.returnSquare(xIterator,y)) != 0 then
+	       else if pos(opponentColour, moveBoard.returnSquare(xIterator,y)) <> 0 then
 	       begin
 		  list.addNode(xIterator,y,evaluatePiece(xIterator,y,moveBoard,side));
 		  break
 	       end
-	       else if moveBoard.returnSquare(xIterator,y) != 'Empty' then
+	       else if moveBoard.returnSquare(xIterator,y) <> 'Empty' then
 		  break;
 	       end;
 	       for xIterator := x-1 downto 0 do
@@ -660,12 +665,12 @@ procedure addNode( inputX, inputY, inputSquareRank: integer );
 		     list.addNode(xIterator,y,evaluatePiece(xIterator,y,moveBoard,side))
 		  end
 
-	       else if pos(opponentColour, moveBoard.returnSquare(xIterator,y)) != 0 then
+	       else if pos(opponentColour, moveBoard.returnSquare(xIterator,y)) <> 0 then
 	       begin
 		  list.addNode(xIterator,y,evaluatePiece(xIterator,y,moveBoard,side));
 		  break
 	       end
-	       else if moveBoard.returnSquare(xIterator,y) != 'Empty' then
+	       else if moveBoard.returnSquare(xIterator,y) <> 'Empty' then
 		  break;
 		  
 
@@ -678,12 +683,12 @@ procedure addNode( inputX, inputY, inputSquareRank: integer );
 		     list.addNode(x,yIterator,evaluatePiece(x,yIterator,moveBoard,side))
 		  end
 
-	       else if pos(opponentColour, moveBoard.returnSquare(x,yIterator)) != 0 then
+	       else if pos(opponentColour, moveBoard.returnSquare(x,yIterator)) <> 0 then
 	       begin
 		  list.addNode(x,yIterator,evaluatePiece(x,yIterator,moveBoard,side));
 		  break
 	       end
-	       else if moveBoard.returnSquare(x,yIterator) != 'Empty' then
+	       else if moveBoard.returnSquare(x,yIterator) <> 'Empty' then
 		  break;
 	       end;
 
@@ -694,12 +699,12 @@ procedure addNode( inputX, inputY, inputSquareRank: integer );
 		     list.addNode(x,yIterator,evaluatePiece(x,yIterator,moveBoard,side))
 		  end
 
-	       else if pos(opponentColour, moveBoard.returnSquare(x,yIterator)) != 0 then
+	       else if pos(opponentColour, moveBoard.returnSquare(x,yIterator)) <> 0 then
 	       begin
 		  list.addNode(x,yIterator,evaluatePiece(x,yIterator,moveBoard,side));
 		  break
 	       end
-	       else if moveBoard.returnSquare(x,yIterator) != 'Empty' then
+	       else if moveBoard.returnSquare(x,yIterator) <> 'Empty' then
 		  break;
 	       end;
 
@@ -707,13 +712,13 @@ procedure addNode( inputX, inputY, inputSquareRank: integer );
 	       for xIterator := x+1 to 7 do
 	       begin
 		  if moveBoard.returnSquare(xIterator,yIterator) = 'Empty' then
-		     list.addNode(xIterator,yIterator, evaluatePiece(xIterator,yIterator, moveBoard, side));
-	       else if pos(opponentColour, moveBoard.returnSquare(xIterator,yIterator)) != 0 then
+		     list.addNode(xIterator,yIterator, evaluatePiece(xIterator,yIterator, moveBoard, side))
+	       else if pos(opponentColour, moveBoard.returnSquare(xIterator,yIterator)) <> 0 then
 	       begin
 		  list.addNode(xIterator,yIterator, evaluatePiece(xIterator,yIterator, moveBoard, side));
 		  break
 	       end
-	       else if moveBoard.returnSquare(xIterator,yIterator) != 'Empty' then
+	       else if moveBoard.returnSquare(xIterator,yIterator) <> 'Empty' then
 		  break;
 		  inc(yIterator);
 	       end;
@@ -722,13 +727,13 @@ procedure addNode( inputX, inputY, inputSquareRank: integer );
 	       for xIterator := x+1 to 7 do
 	       begin
 		  if moveBoard.returnSquare(xIterator,yIterator) = 'Empty' then
-		     list.addNode(xIterator,yIterator, evaluatePiece(xIterator,yIterator, moveBoard, side));
-	       else if pos(opponentColour, moveBoard.returnSquare(xIterator,yIterator)) != 0 then
+		     list.addNode(xIterator,yIterator, evaluatePiece(xIterator,yIterator, moveBoard, side))
+	       else if pos(opponentColour, moveBoard.returnSquare(xIterator,yIterator)) <> 0 then
 	       begin
 		  list.addNode(xIterator,yIterator, evaluatePiece(xIterator,yIterator, moveBoard, side));
 		  break
 	       end
-	       else if moveBoard.returnSquare(xIterator,yIterator) != 'Empty' then
+	       else if moveBoard.returnSquare(xIterator,yIterator) <> 'Empty' then
 		  break;
 		  dec(yIterator);
 	       end;
@@ -737,13 +742,13 @@ procedure addNode( inputX, inputY, inputSquareRank: integer );
 	       for xIterator := x-1 downto 0 do
 	       begin
 		  if moveBoard.returnSquare(xIterator,yIterator) = 'Empty' then
-		     list.addNode(xIterator,yIterator, evaluatePiece(xIterator,yIterator, moveBoard, side));
-	       else if pos(opponentColour, moveBoard.returnSquare(xIterator,yIterator)) != 0 then
+		     list.addNode(xIterator,yIterator, evaluatePiece(xIterator,yIterator, moveBoard, side))
+	       else if pos(opponentColour, moveBoard.returnSquare(xIterator,yIterator)) <> 0 then
 	       begin
 		  list.addNode(xIterator,yIterator, evaluatePiece(xIterator,yIterator, moveBoard, side));
 		  break
 	       end
-	       else if moveBoard.returnSquare(xIterator,yIterator) != 'Empty' then
+	       else if moveBoard.returnSquare(xIterator,yIterator) <> 'Empty' then
 		  break;
 		  inc(yIterator);
 	       end;
@@ -753,17 +758,17 @@ procedure addNode( inputX, inputY, inputSquareRank: integer );
 	       for xIterator := x-1 downto 0 do
 	       begin
 		  if moveBoard.returnSquare(xIterator,yIterator) = 'Empty' then
-		     list.addNode(xIterator,yIterator, evaluatePiece(xIterator,yIterator, moveBoard, side));
-	       else if pos(opponentColour, moveBoard.returnSquare(xIterator,yIterator)) != 0 then
+		     list.addNode(xIterator,yIterator, evaluatePiece(xIterator,yIterator, moveBoard, side))
+	       else if pos(opponentColour, moveBoard.returnSquare(xIterator,yIterator)) <> 0 then
 	       begin
 		  list.addNode(xIterator,yIterator, evaluatePiece(xIterator,yIterator, moveBoard, side));
 		  break
 	       end
-	       else if moveBoard.returnSquare(xIterator,yIterator) != 'Empty' then
+	       else if moveBoard.returnSquare(xIterator,yIterator) <> 'Empty' then
 		  break;
 		  dec(yIterator);
 	       end;
-	       possibleSquares2DArray := @list;
+	       possibleSquares2DArray := list;
 	    end;
 
 
@@ -778,7 +783,7 @@ procedure addNode( inputX, inputY, inputSquareRank: integer );
 		     begin
 			list.addNode(x+1,y, evaluatePiece(x+1,y, moveBoard, WHITE))
 		     end
-		  else if pos('Black', moveBoard.returnSquare(x+1,y)) != 0 then
+		  else if pos('Black', moveBoard.returnSquare(x+1,y)) <> 0 then
 		  begin
 		     list.addNode(x+1,y, evaluatePiece(x+1,y, moveBoard, WHITE));
 		  end;
@@ -789,7 +794,7 @@ procedure addNode( inputX, inputY, inputSquareRank: integer );
 		     begin
 			list.addNode(x-1,y, evaluatePiece(x-1,y, moveBoard, WHITE))
 		     end
-		  else if pos('Black', moveBoard.returnSquare(x-1,y)) != 0 then
+		  else if pos('Black', moveBoard.returnSquare(x-1,y)) <> 0 then
 		  begin
 		     list.addNode(x-1,y, evaluatePiece(x-1,y, moveBoard, WHITE));
 		  end;
@@ -801,7 +806,7 @@ procedure addNode( inputX, inputY, inputSquareRank: integer );
 		     begin
 			list.addNode(x,y+1, evaluatePiece(x,y+1, moveBoard, WHITE))
 		     end
-		  else if pos('Black', moveBoard.returnSquare(x,y+1)) != 0 then
+		  else if pos('Black', moveBoard.returnSquare(x,y+1)) <> 0 then
 		  begin
 		     list.addNode(x,y+1, evaluatePiece(x,y+1, moveBoard, WHITE));
 		  end;
@@ -813,7 +818,7 @@ procedure addNode( inputX, inputY, inputSquareRank: integer );
 		     begin
 			list.addNode(x,y-1, evaluatePiece(x,y-1, moveBoard, WHITE))
 		     end
-		  else if pos('Black', moveBoard.returnSquare(x,y-1)) != 0 then
+		  else if pos('Black', moveBoard.returnSquare(x,y-1)) <> 0 then
 		  begin
 		     list.addNode(x,y-1, evaluatePiece(x,y-1, moveBoard, WHITE));
 		  end;
@@ -826,7 +831,7 @@ procedure addNode( inputX, inputY, inputSquareRank: integer );
 			begin
 			   list.addNode(x+1,y+1, evaluatePiece(x+1,y+1, moveBoard, WHITE))
 			end
-		     else if pos('Black', moveBoard.returnSquare(x+1,y+1)) != 0 then
+		     else if pos('Black', moveBoard.returnSquare(x+1,y+1)) <> 0 then
 		     begin
 			list.addNode(x+1,y+1, evaluatePiece(x+1,y+1, moveBoard, WHITE))
 		     end;
@@ -841,7 +846,7 @@ procedure addNode( inputX, inputY, inputSquareRank: integer );
 			begin
 			   list.addNode(x+1,y-1, evaluatePiece(x+1,y-1, moveBoard, WHITE))
 			end
-		     else if pos('Black', moveBoard.returnSquare(x+1,y-1)) != 0 then
+		     else if pos('Black', moveBoard.returnSquare(x+1,y-1)) <> 0 then
 		     begin
 			list.addNode(x+1,y-1, evaluatePiece(x+1,y-1,moveBoard, WHITE))
 		     end;
@@ -856,7 +861,7 @@ procedure addNode( inputX, inputY, inputSquareRank: integer );
 			begin
 			   list.addNode(x-1,y+1, evaluatePiece(x-1,y+1, moveBoard, WHITE))
 			end
-		     else if pos('Black', moveBoard.returnSquare(x-1,y+1)) != 0 then
+		     else if pos('Black', moveBoard.returnSquare(x-1,y+1)) <> 0 then
 		     begin
 			list.addNode(x-1,y+1, evaluatePiece(x-1,y+1,moveBoard, WHITE))
 		     end;
@@ -865,13 +870,13 @@ procedure addNode( inputX, inputY, inputSquareRank: integer );
 
 		  if x > 0 then
 		  begin
-		     if > 0 then
+		     if y > 0 then
 		     begin
 			if moveBoard.returnSquare(x-1,y-1) = 'Empty' then
 			begin
 			   list.addNode(x-1,y-1, evaluatePiece(x-1,y-1, moveBoard, WHITE))
 			end
-		     else if pos('Black', moveBoard.returnSquare(x-1,y-1)) != 0 then
+		     else if pos('Black', moveBoard.returnSquare(x-1,y-1)) <> 0 then
 		     begin
 			list.addNode(x-1,y-1, evaluatePiece(x-1,y-1,moveBoard, WHITE))
 		     end;
@@ -893,7 +898,7 @@ procedure addNode( inputX, inputY, inputSquareRank: integer );
 	       end;
 	       
 
-	       possibleSquares2DArray := @list;
+	       possibleSquares2DArray := list;
 	    end;
 
 	       'White Pawn':
@@ -908,14 +913,14 @@ procedure addNode( inputX, inputY, inputSquareRank: integer );
 		     end;
 		     if y < 7 then
 		     begin
-			if pos('Black', moveBaord.returnSquare(x+1,y+1)) != 0 then
+			if pos('Black', moveBoard.returnSquare(x+1,y+1)) <> 0 then
 			begin
 			   list.addNode(x+1,y+1,evaluatePiece(x+1,y+1,moveBoard,WHITE));
 			end;
 		     end;
 		     if y > 0 then
 		     begin
-			if pos('Black', moveBoard.returnSquare(x+1,y-1)) != 0 then
+			if pos('Black', moveBoard.returnSquare(x+1,y-1)) <> 0 then
 			begin
 			   list.addNode(x+1,y-1,evaluatePiece(x+1,y-1,moveBoard,WHITE));
 			end;
@@ -931,9 +936,9 @@ procedure addNode( inputX, inputY, inputSquareRank: integer );
 			end;
 		     end;
 		  end;
-		  possibleSquaresArray := @list;
 	       end;
-
+	       result := list;
+            end;
 	       'Black King':
 	    begin
 	       if side = BLACK then
@@ -944,7 +949,7 @@ procedure addNode( inputX, inputY, inputSquareRank: integer );
 		     begin
 			list.addNode(x+1,y, evaluatePiece(x+1,y, moveBoard, BLACK))
 		     end
-		  else if pos('White', moveBoard.returnSquare(x+1,y)) != 0 then
+		  else if pos('White', moveBoard.returnSquare(x+1,y)) <> 0 then
 		  begin
 		     list.addNode(x+1,y, evaluatePiece(x+1,y, moveBoard, BLACK));
 		  end;
@@ -955,7 +960,7 @@ procedure addNode( inputX, inputY, inputSquareRank: integer );
 		     begin
 			list.addNode(x-1,y, evaluatePiece(x-1,y, moveBoard, BLACK))
 		     end
-		  else if pos('White', moveBoard.returnSquare(x-1,y)) != 0 then
+		  else if pos('White', moveBoard.returnSquare(x-1,y)) <> 0 then
 		  begin
 		     list.addNode(x-1,y, evaluatePiece(x-1,y, moveBoard, BLACK));
 		  end;
@@ -967,7 +972,7 @@ procedure addNode( inputX, inputY, inputSquareRank: integer );
 		     begin
 			list.addNode(x,y+1, evaluatePiece(x,y+1, moveBoard, BLACK))
 		     end
-		  else if pos('White', moveBoard.returnSquare(x,y+1)) != 0 then
+		  else if pos('White', moveBoard.returnSquare(x,y+1)) <> 0 then
 		  begin
 		     list.addNode(x,y+1, evaluatePiece(x,y+1, moveBoard, BLACK));
 		  end;
@@ -979,7 +984,7 @@ procedure addNode( inputX, inputY, inputSquareRank: integer );
 		     begin
 			list.addNode(x,y-1, evaluatePiece(x,y-1, moveBoard, BLACK))
 		     end
-		  else if pos('White', moveBoard.returnSquare(x,y-1)) != 0 then
+		  else if pos('White', moveBoard.returnSquare(x,y-1)) <> 0 then
 		  begin
 		     list.addNode(x,y-1, evaluatePiece(x,y-1, moveBoard, BLACK));
 		  end;
@@ -992,7 +997,7 @@ procedure addNode( inputX, inputY, inputSquareRank: integer );
 			begin
 			   list.addNode(x+1,y+1, evaluatePiece(x+1,y+1, moveBoard, BLACK))
 			end
-		     else if pos('White', moveBoard.returnSquare(x+1,y+1)) != 0 then
+		     else if pos('White', moveBoard.returnSquare(x+1,y+1)) <> 0 then
 		     begin
 			list.addNode(x+1,y+1, evaluatePiece(x+1,y+1, moveBoard, BLACK))
 		     end;
@@ -1007,7 +1012,7 @@ procedure addNode( inputX, inputY, inputSquareRank: integer );
 			begin
 			   list.addNode(x+1,y-1, evaluatePiece(x+1,y-1, moveBoard, BLACK))
 			end
-		     else if pos('White', moveBoard.returnSquare(x+1,y-1)) != 0 then
+		     else if pos('White', moveBoard.returnSquare(x+1,y-1)) <> 0 then
 		     begin
 			list.addNode(x+1,y-1, evaluatePiece(x+1,y-1,moveBoard, BLACK))
 		     end;
@@ -1022,7 +1027,7 @@ procedure addNode( inputX, inputY, inputSquareRank: integer );
 			begin
 			   list.addNode(x-1,y+1, evaluatePiece(x-1,y+1, moveBoard, BLACK))
 			end
-		     else if pos('White', moveBoard.returnSquare(x-1,y+1)) != 0 then
+		     else if pos('White', moveBoard.returnSquare(x-1,y+1)) <> 0 then
 		     begin
 			list.addNode(x-1,y+1, evaluatePiece(x-1,y+1,moveBoard, BLACK))
 		     end;
@@ -1031,13 +1036,13 @@ procedure addNode( inputX, inputY, inputSquareRank: integer );
 
 		  if x > 0 then
 		  begin
-		     if > 0 then
+		     if y > 0 then
 		     begin
 			if moveBoard.returnSquare(x-1,y-1) = 'Empty' then
 			begin
 			   list.addNode(x-1,y-1, evaluatePiece(x-1,y-1, moveBoard, BLACK))
 			end
-		     else if pos('White', moveBoard.returnSquare(x-1,y-1)) != 0 then
+		     else if pos('White', moveBoard.returnSquare(x-1,y-1)) <> 0 then
 		     begin
 			list.addNode(x-1,y-1, evaluatePiece(x-1,y-1,moveBoard, BLACK))
 		     end;
@@ -1059,7 +1064,7 @@ procedure addNode( inputX, inputY, inputSquareRank: integer );
 	       end;
 	       
 
-	       possibleSquares2DArray := @list;
+	       possibleSquares2DArray := list;
 	    end;
 
 	       'Black Pawn':
@@ -1074,14 +1079,14 @@ procedure addNode( inputX, inputY, inputSquareRank: integer );
 		     end;
 		     if y < 7 then
 		     begin
-			if pos('White', moveBaord.returnSquare(x+1,y+1)) != 0 then
+			if pos('White', moveBoard.returnSquare(x+1,y+1)) <> 0 then
 			begin
 			   list.addNode(x+1,y+1,evaluatePiece(x+1,y+1,moveBoard,BLACK));
 			end;
 		     end;
 		     if y > 0 then
 		     begin
-			if pos('White', moveBoard.returnSquare(x+1,y-1)) != 0 then
+			if pos('White', moveBoard.returnSquare(x+1,y-1)) <> 0 then
 			begin
 			   list.addNode(x+1,y-1,evaluatePiece(x+1,y-1,moveBoard,BLACK));
 			end;
@@ -1097,24 +1102,26 @@ procedure addNode( inputX, inputY, inputSquareRank: integer );
 			end;
 		     end;
 		  end;
-		  possibleSquaresArray := @list;
 	       end;
+	       result := list;
+	    end;
 
 	       'Empty':
 	    begin
-	       possibleSquaresArray := @list;
+	       result := list;
 	    end;
 
 	    end;
+    end;
 
-	    function TMoveCalculator.checkMateTest(gameBoard: TBoard, side: integer): boolean;
+	    function TMoveCalculator.checkMateTest(gameBoard: IBoard; side: integer): boolean;
 
 	    var
-	       testBoard: TBoard;
+	       testBoard: IBoard;
 	       temp: THeapLinkedList;
 	       kingX, kingy, iterator, xIterator, yIterator, xIterator2, yIterator2,  tempA, tempB: integer;
-	       moveVector: array[0..567] of int;
-	       returnedVector: string;
+//	       moveVector: array[0..567] of integer;
+	       returnedVector, piece: string;
 	       
 
 
@@ -1122,25 +1129,26 @@ procedure addNode( inputX, inputY, inputSquareRank: integer );
 
 	       if side = BLACK then
 	       begin
-		  for xIterator = 0 to 7 do
+		  for xIterator := 0 to 7 do
 		  begin
-		     for yIterator = 0 to 7 do
+		     for yIterator := 0 to 7 do
 		     begin
 			if pos('Black', gameBoard.returnSquare(xIterator,yIterator)) = 0 then
 			begin
 			   temp := possibleSquares2DArray(xIterator,yIterator,gameBoard,side);
 			   returnedVector := temp.returnVector;
-			   for iterator := 0 to length(returnVector) -1 do
+			   iterator := 0;
+			   while iterator <> length(returnVector) -1 do
 			   begin
 			      testBoard := gameBoard;
-			      testA := ord(returnedVector[iterator]);
-			      testB := ord(returnedVector[iterator+1]);
+			      tempA := ord(returnedVector[iterator]);
+			      tempB := ord(returnedVector[iterator+1]);
 			      piece := testBoard.returnSquare(xIterator,yIterator);
 			      testBoard.setSquare(xIterator,yIterator, 'Empty');
 			      testBoard.setSquare(tempA,tempB, piece);
-			      for xIterator2 = 0 to 7 do
+			      for xIterator2 := 0 to 7 do
 			      begin
-				 for yIterator2 = 0 to 7 do
+				 for yIterator2 := 0 to 7 do
 				 begin
 				    if testBoard.returnSquare(xIterator2,yIterator2) = 'Black King' then
 				    begin
@@ -1154,11 +1162,12 @@ procedure addNode( inputX, inputY, inputSquareRank: integer );
 			      begin
 				 checkMateTest := false;
 			      end;
-			      inc(iterator);
+			      iterator := iterator + 2;
 			   end;
 			end;
-		     end;
-		  end
+		    end;
+	        end;
+              end
 	       else
 	       begin
 		  for xIterator := 0 to 7 do
@@ -1169,16 +1178,16 @@ procedure addNode( inputX, inputY, inputSquareRank: integer );
 			begin
 			   temp := possibleSquares2DArray(xIterator,yIterator,gameBoard,side);
 			   returnedVector := temp.returnVector;
-			   for iterator = 0 to length(returnedVector) -1 do
+			   for iterator := 0 to length(returnedVector) -1 do
 			   begin
 			      tempA := ord(returnedVector[iterator]);
 			      tempB := ord(returnedVector[iterator+1]);
-			      piece = testBoard.returnSquare(xIterator,yIterator);
+			      piece := testBoard.returnSquare(xIterator,yIterator);
 			      testBoard.setSquare(xIterator,yIterator,'Empty');
 			      testBoard.setSquare(tempA,tempB,piece);
-			      for xIterator2 = 0 to 7 do
+			      for xIterator2 := 0 to 7 do
 			      begin
-				 for yIterator2 = 0 to 7 do
+				 for yIterator2 := 0 to 7 do
 				 begin
 				    if testBoard.returnSquare(xIterator2,yIterator2) = 'White King' then
 				    begin
@@ -1196,18 +1205,18 @@ procedure addNode( inputX, inputY, inputSquareRank: integer );
 		     end;
 		  end;
 	       end;
-	       end;
-	       checkMateTest := true;
+	       
+	       result := true;
 	    end;
 
 
-	    function TMoveCalculator.checkCalculator(x,y,side: integer; TBoard moveBoard): boolean;
+	    function TMoveCalculator.checkCalculator(x,y: integer; moveBoard: IBoard;side: integer): boolean;
 
 	    var
 	       returnedVector: string;
 	       temp: THeapLinkedList;
 	       moveVector: array[0 .. 567] of integer;
-	       opponentSide,xIterator,yIterator,iterator,pucki,tempA,tempB: integer;
+	       opponentSide,xIterator,yIterator,iterator,puck,tempA,tempB: integer;
 
 	    begin
 	       opponentSide := BLACK;
@@ -1219,44 +1228,44 @@ procedure addNode( inputX, inputY, inputSquareRank: integer );
 		  begin
 		     for yIterator := 0 to 7 do
 		     begin
-			if pos('White', moveBoard.returnSquare(xIterator, yIterator)) != 0 then
+			if pos('White', moveBoard.returnSquare(xIterator, yIterator)) <> 0 then
 			begin
 			   temp := possibleSquares2DArray(xIterator, yIterator, moveBoard, opponentSide);
 			   returnedVector := temp.returnVector;
 			   for iterator := 0 to length(returnedVector) - 1 do
 			   begin
-			      moveVector[iterator+puck] := returnedVector[iterator];
+			      moveVector[iterator+puck] := StrToInt(returnedVector[iterator]);
 			   end;
 			   puck += length(returnVector);
 			end;
 		     end;
 		  end;
-	       end;
+	       end
 	    else
 	    begin
 	       puck := 0;
 	       for xIterator := 0 to 7 do
 	       begin
-		  for yIterator : = 0 to 7 do
+		  for yIterator := 0 to 7 do
 		     begin
-			if pos('Black', moveBoard.returnSquare(xIterator,yIterator)) != 0 then
+			if pos('Black', moveBoard.returnSquare(xIterator,yIterator)) <> 0 then
 			   begin
 			      temp := possibleSquares2DArray(xIterator,yIterator, moveBoard, opponentSide);
 			      returnedVector := temp.returnVector;
 			      for iterator := 0 to length(returnedVector) -1 do
 				 begin
-				    moveVector[iterator+puck] := returnedVector[iterator];
+				    moveVector[iterator+puck] := StrToInt(returnedVector[iterator]);
 				 end;
 			      puck += length(returnVector);
 			   end;
 		     end;
 	       end;
 	    end;
-	       for iterator := 0 to puck*2 -1 do
+	       iterator := 0;
+	       while iterator <> puck*2 -1 do
 		  begin
 		     tempA := moveVector[iterator];
 		     tempB := moveVector[iterator+1];
-		     inc(iterator)
 		     if x = tempA then
 			begin
 			   if y = tempB then
@@ -1265,7 +1274,8 @@ procedure addNode( inputX, inputY, inputSquareRank: integer );
 				 checkCalculator := true
 			      end;
 			end;
+			iterator := iterator +2;
 		  end;
-	       checkCalculator := false;
+	       result := false;
 	    end;
 end.

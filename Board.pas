@@ -8,17 +8,19 @@
 
 unit Board;
 interface
+
+uses
+	BoardInterface, Classes;
 type
     boardArray = array[0 .. 7,0 .. 7] of string;
 
-    TBoard = Object
+    TBoard = Class(TInterfacedObject, IBoard)
     private
 
     public
         constructor create();
-        procedure setSquare(x, y: integer; piece: string);
-        
-        function returnSquare(x, y: integer): string;
+        procedure setSquare(x, y: integer; piece: string); virtual;
+        function returnSquare(x, y: integer): string; virtual;
 end;
 
 var
