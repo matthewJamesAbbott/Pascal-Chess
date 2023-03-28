@@ -15,8 +15,8 @@ uses
 type
 
     dataArray = array [0 .. 2] of integer;
+    dynamicArray = array of integer;
     THeapLinkedList = class
-
     public
         constructor create();
         procedure destroyNodes();
@@ -30,6 +30,7 @@ type
         function returnTailsData(): dataArray;
         function returnNodeNumberOfFirstInstanceOfData(inputData: integer): integer;
 	function returnVector(): string;
+	function returnWeightedVector(): dynamicArray; 
     end;
 var 
     head: THeapNode;
@@ -223,4 +224,34 @@ begin
         end;
    result := returnString;
 end;
+
+function THeapLinkedList.returnWeightedVector(): dynamicArray;
+   var
+    iterator, i: integer;
+    temp: THeapNode;
+    tempArray: array[0 .. 2] of integer;
+    returnString: string;
+    dArray : array of integer;
+
+begin
+   
+    if head = nil then
+        result := dArray
+    else
+        begin
+            temp := head;
+            while temp.getNext <> nil do
+                begin
+                    tempArray := temp.getData;
+                    temp := temp.getNext;
+
+                    for iterator := 0 to 2 do
+		       setLength(dArray, length(dArray) + 1);
+                       dArray[high(dArray)] := tempArray[iterator];
+                end;
+
+        end;
+   result := dArray;
+end;
+
 end.

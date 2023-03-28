@@ -19,7 +19,7 @@ type
 	     end;
 
 
-TMoveCalculator = Object
+TMoveCalculator = Class
 
    private
       procedure addNode( inputX, inputY, inputSquareRank: integer );
@@ -28,7 +28,7 @@ TMoveCalculator = Object
 
 
       public
-      constructor Create();
+      constructor create();
 	function castleCheck(side: integer): boolean;
 	function enPassantCheck(side: integer): integer;
 	function possibleSquares2DArray(x, y: integer;moveBoard: IBoard; side: integer): THeapLinkedList;
@@ -57,7 +57,7 @@ TMoveCalculator = Object
 
       implementation
 
-      constructor TMoveCalculator.Create();
+      constructor TMoveCalculator.create();
       begin
 
       end;

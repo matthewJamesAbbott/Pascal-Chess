@@ -53,7 +53,6 @@ end;
 function THeapNode.getData:outArray;
 
 var
-   interator: integer;
    returnArray: array [0 .. 2] of integer;
 begin
    returnArray[0] := x;
